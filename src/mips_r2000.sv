@@ -18,7 +18,7 @@ endmodule
 
 module mips_r2000 (
     input  var logic                        clk                ,
-    input  var logic                        rst                ,
+    input  var logic                        nrst               ,
     input  var logic [Constants::BYTE-1:0]  rom     [0:Constants::ROM_SIZE-1],
     input  var logic                        stall              ,
 
@@ -36,7 +36,7 @@ module mips_r2000 (
 
     memory memory_inst (
         .clk(clk),
-        .rst(rst),
+        .nrst(nrst),
         .rom(rom),
         .stall(stall),
 

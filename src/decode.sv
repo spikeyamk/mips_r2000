@@ -294,7 +294,7 @@ endmodule
 
 module registers (
     input var logic clk,
-    input var logic rst,
+    input var logic nrst,
 
     input var logic [Constants::REG_ADDR_WIDTH-1:0] rs_address,
     input var logic [Constants::REG_ADDR_WIDTH-1:0] rt_address,
@@ -324,8 +324,8 @@ module registers (
         );
     end
 
-    always_ff @ (posedge clk, negedge rst) begin
-        if (!rst) begin
+    always_ff @ (posedge clk, negedge nrst) begin
+        if (!nrst) begin
             for (int unsigned i = 0; i < (Constants::REG_COUNT - 1); i++) begin
                 reg_file[i] <= 0;
             end
@@ -337,7 +337,7 @@ endmodule
 
 module decode_buffer (
     input var logic clk,
-    input var logic rst,
+    input var logic nrst,
 
     input var logic [Constants::WIDTH-1:0] pc_in,
 
@@ -403,8 +403,8 @@ module decode_buffer (
     output var logic [2-1:0] load_store_data_size_mode_out,
     output var logic         store_out                
 );
-    always_ff @ (posedge clk, negedge rst) begin
-        if (!rst) begin
+    always_ff @ (posedge clk, negedge nrst) begin
+        if (!nrst) begin
             pc_out <= 0;
 
             rs_out         <= 0;
@@ -474,7 +474,7 @@ endmodule
 
 module decode (
     input  var logic                        clk                ,
-    input  var logic                        rst                ,
+    input  var logic                        nrst                ,
     input  var logic [Constants::BYTE-1:0]  rom     [0:Constants::ROM_SIZE-1] ,
     input  var logic                        stall              ,
     input  var logic                        branch_taken       ,
@@ -523,7 +523,7 @@ module decode (
 
     fetch fetch_inst (
         .clk(clk),
-        .rst(rst),
+        .nrst(nrst),
         .rom(rom),
         .stall(stall),
         .branch_taken(branch_taken),
@@ -597,7 +597,7 @@ module decode (
 
     registers registers_inst (
         .clk (clk),
-        .rst (rst),
+        .nrst (nrst),
         .
         rs_address (rs_address),
         .rt_address (rt_address),
@@ -613,7 +613,7 @@ module decode (
 
     decode_buffer decode_buffer_inst (
         .clk (clk),
-        .rst (rst),
+        .nrst (nrst),
         .
         pc_in (pc_fetched),
         .

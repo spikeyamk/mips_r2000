@@ -25,7 +25,7 @@ int sc_main(int argc, char* argv[]) {
     std::ios::sync_with_stdio();
 
     sc_clock clk{ "clk", sc_time { 10.0, SC_NS }, 0.5, sc_time { 3.0, SC_NS } };
-    sc_signal<bool> rst;
+    sc_signal<bool> nrst;
     sc_signal<bool> stall;
     sc_signal<bool> branch_taken;
     sc_signal<sc_bv<32>> branch_target;
@@ -76,7 +76,7 @@ int sc_main(int argc, char* argv[]) {
     const std::unique_ptr<Vfetch> dut{new Vfetch{"fetch_context"}};
 
     dut->clk(clk);
-    dut->rst(rst);
+    dut->nrst(nrst);
     dut->stall(stall);
     dut->branch_taken(branch_taken);
     dut->branch_target(branch_target);
@@ -86,7 +86,7 @@ int sc_main(int argc, char* argv[]) {
     dut->pc_fetched(pc_fetched);
     dut->instruction_fetched(instruction_fetched);
 
-    rst = 1;
+    nrst = 1;
     stall = false;
     branch_taken = 0;
     branch_target = 0;
@@ -101,11 +101,11 @@ int sc_main(int argc, char* argv[]) {
     std::signal(SIGABRT, [](int signal) { if(tfp) { tfp->flush(); tfp->close(); }});
 
     sc_start(1, SC_NS);
-    rst = 0;
+    nrst = 0;
     sc_start(1, SC_NS);
     assert(dut->pc_fetched.read() == Fetch::PC_RESET_VALUE);
     assert(dut->instruction_fetched.read() == 0);
-    rst = 1;
+    nrst = 1;
     sc_start(1, SC_NS);
 
     for(const auto& [i, chunk]: std::views::enumerate(dut->rom | std::views::chunk(4))) {
@@ -116,11 +116,11 @@ int sc_main(int argc, char* argv[]) {
     }
 
     sc_start(1, SC_NS);
-    rst = 0;
+    nrst = 0;
     sc_start(8, SC_NS);
     assert(dut->pc_fetched.read() == Fetch::PC_RESET_VALUE);
     assert(dut->instruction_fetched.read() == 0);
-    rst = 1;
+    nrst = 1;
     sc_start(1, SC_NS);
 
     constexpr size_t STALLER { 40 };

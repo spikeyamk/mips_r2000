@@ -220,7 +220,7 @@ endmodule
 
 module execute_buffer (
     input var logic clk,
-    input var logic rst,
+    input var logic nrst,
 
     input var logic [Constants::WIDTH-1:0] pc_in        ,
     input var logic                        alu_mode_in  ,
@@ -250,8 +250,8 @@ module execute_buffer (
     output var logic         load_sign_extend_out         ,
     output var logic         store_out                
 );
-    always_ff @ (posedge clk, negedge rst) begin
-        if (!rst) begin
+    always_ff @ (posedge clk, negedge nrst) begin
+        if (!nrst) begin
             pc_out         <= 0;
             alu_mode_out   <= 0;
             alu_result_out <= 0;
@@ -285,7 +285,7 @@ endmodule
 
 module execute (
     input  var logic                        clk                ,
-    input  var logic                        rst                ,
+    input  var logic                        nrst                ,
     input  var logic [Constants::BYTE-1:0]  rom     [0:Constants::ROM_SIZE-1] ,
     input  var logic                        stall              ,
 
@@ -346,7 +346,7 @@ module execute (
 
     decode decode_inst (
         .clk(clk),
-        .rst(rst),
+        .nrst(nrst),
         .rom(rom),
         .stall(stall),
         .branch_taken(branch_taken_branched),
@@ -492,7 +492,7 @@ module execute (
 
     execute_buffer execute_buffer_inst (
         .clk (clk),
-        .rst (rst),
+        .nrst (nrst),
         .
         pc_in         (pc_decoded ),
         .alu_mode_in   (alu_mode_decoded),

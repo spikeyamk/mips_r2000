@@ -4,12 +4,12 @@ endpackage
 
 module pc_register (
     input  var logic                        clk   ,
-    input  var logic                        rst   ,
+    input  var logic                        nrst  ,
     input  var logic [Constants::WIDTH-1:0] pc_in ,
     output var logic [Constants::WIDTH-1:0] pc_out
 );
-    always_ff @ (posedge clk, negedge rst) begin
-        if (!rst) begin
+    always_ff @ (posedge clk, negedge nrst) begin
+        if (!nrst) begin
             pc_out <= 0;
         end else begin
             pc_out <= pc_in;
@@ -63,7 +63,7 @@ endmodule
 
 module fetch_buffer (
     input  var logic                        clk            ,
-    input  var logic                        rst            ,
+    input  var logic                        nrst            ,
     input  var logic                        stall          ,
     input  var logic [Constants::WIDTH-1:0] pc_in          ,
     input  var logic                        branch_taken   ,
@@ -72,8 +72,8 @@ module fetch_buffer (
     output var logic [Constants::WIDTH-1:0] pc_out         ,
     output var logic [Constants::WIDTH-1:0] instruction_out
 );
-    always_ff @ (posedge clk, negedge rst) begin
-        if (!rst) begin
+    always_ff @ (posedge clk, negedge nrst) begin
+        if (!nrst) begin
             pc_out          <= Fetch::PC_RESET_VALUE;
             instruction_out <= 0;
         end else if (stall) begin
@@ -92,7 +92,7 @@ endmodule
 
 module fetch (
     input  var logic                        clk                ,
-    input  var logic                        rst                ,
+    input  var logic                        nrst                ,
     input  var logic [Constants::BYTE-1:0]  rom     [0:Constants::ROM_SIZE-1] ,
     input  var logic                        stall              ,
     input  var logic                        branch_taken       ,
@@ -105,7 +105,7 @@ module fetch (
 
     pc_register pc_register_inst (
         .clk    (clk        ),
-        .rst    (rst        ),
+        .nrst   (nrst        ),
         .pc_in  (pc_advanced),
         .pc_out (pc         )
     );
@@ -129,7 +129,7 @@ module fetch (
 
     fetch_buffer fetch_buffer_inst (
         .clk             (clk                ),
-        .rst             (rst                ),
+        .nrst             (nrst                ),
         .stall           (stall              ),
         .pc_in           (pc                 ),
         .branch_taken    (branch_taken       ),

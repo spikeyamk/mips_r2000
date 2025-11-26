@@ -2,13 +2,13 @@ module divider #(
     parameter int unsigned STOPPER = 25_000_000
 ) (
     input logic clk,
-    input logic rst,
+    input logic nrst,
     output logic out
 );
 	logic[31:0] count = 0;
 	
-	always @(posedge clk, negedge rst) begin
-        if (!rst) begin
+	always @(posedge clk, negedge nrst) begin
+        if (!nrst) begin
             count <= 32'b0;
             out <= 1'b0;
         end else if (count < STOPPER) begin
@@ -24,11 +24,11 @@ module counter #(
     parameter int unsigned WIDTH = 3
 ) (
     input logic clk,
-    input logic rst,
+    input logic nrst,
     output logic [WIDTH-1:0] out
 );
-    always_ff @(posedge clk, negedge rst) begin
-        if (!rst) begin
+    always_ff @(posedge clk, negedge nrst) begin
+        if (!nrst) begin
             out <= {WIDTH{1'b0}};
         end else begin
             out <= out + 1'b1;
@@ -65,7 +65,7 @@ endmodule
 
 module sevseg (
     input logic clk,
-    input logic rst,
+    input logic nrst,
     input logic [31:0] number,
     output logic [7:0] an,
     output logic [6:0] seg,
@@ -76,7 +76,7 @@ module sevseg (
         .STOPPER(10_000)
     ) divider_10_000 (
         .clk(clk),
-        .rst(rst),
+        .nrst(nrst),
         .out(clk_divided_10_000)
     );
 
@@ -85,12 +85,12 @@ module sevseg (
         .WIDTH(3)
     ) counter_digit_selector (
         .clk(clk_divided_10_000),
-        .rst(rst),
+        .nrst(nrst),
         .out(digit_selector)
     );
     
-    always_ff @(posedge clk_divided_10_000, negedge rst) begin
-        if (!rst || (an == 8'b1111_1111)) begin
+    always_ff @(posedge clk_divided_10_000, negedge nrst) begin
+        if (!nrst || (an == 8'b1111_1111)) begin
             an <= 8'b1111_1110;
         end else begin
             an <= (an == 8'b0111_1111) ? 8'b1111_1110 : ((an << 1'b1) | 8'b0000_0001);
@@ -160,7 +160,7 @@ endmodule
 
 module stall_stepper (
     input logic clk,
-    input logic rst,
+    input logic nrst,
     input logic stall,
     input logic step,
     output logic out
@@ -176,14 +176,14 @@ module stall_stepper (
     end
 
     logic stall_stepped;
-    always_ff @(negedge clk, negedge rst) begin
-        if (!rst) begin
+    always_ff @(negedge clk, negedge nrst) begin
+        if (!nrst) begin
             stall_stepped <= step;
         end else if (step_posedge_flag & stall) begin
             stall_stepped <= 0;
             step_posedge_flag_nrst <= 0;
         end else begin
-            step_posedge_flag_nrst <= 1;
+            step_posedge_flag_nnrst <= 1;
             stall_stepped <= stall;
         end
     end
@@ -199,7 +199,7 @@ endmodule
 
 module bubble_sort_demo (
     input logic clk,
-    input logic rst,
+    input logic nrst,
     input logic stall,
     input logic turbo,
     input logic step,
@@ -212,11 +212,11 @@ module bubble_sort_demo (
     output logic [6:0] seg,
     output logic dp
 );
-    logic rst_debounced_synced;
-    debounce_sync debounce_sync_rst (
+    logic nrst_debounced_synced;
+    debounce_sync debounce_sync_nrst (
         .clk(clk),
-        .in(rst),
-        .out(rst_debounced_synced)
+        .in(nrst),
+        .out(nrst_debounced_synced)
     );
     
     logic stall_debounced_synced;
@@ -1084,7 +1084,7 @@ module bubble_sort_demo (
         .STOPPER(25_000_000)
     ) divider_25_000_000 (
         .clk(clk),
-        .rst(rst_debounced_synced),
+        .nrst(nrst_debounced_synced),
         .out(clk_divided_25_000_000)
     );
     
@@ -1093,7 +1093,7 @@ module bubble_sort_demo (
         .STOPPER(100_000)
     ) divider_turbo (
         .clk(clk),
-        .rst(rst_debounced_synced),
+        .nrst(nrst_debounced_synced),
         .out(clk_divided_turbo)
     );
     
@@ -1105,7 +1105,7 @@ module bubble_sort_demo (
     logic stall_stepped;
     stall_stepper stall_stepper_inst (
         .clk(mips_r2000_clk),
-        .rst(rst_debounced_synced),
+        .nrst(nrst_debounced_synced),
         .stall(stall_debounced_synced),
         .step(step_debounced_synced),
         .out(stall_stepped)
@@ -1113,7 +1113,7 @@ module bubble_sort_demo (
 
     mips_r2000 mips_r2000_inst(
         .clk(mips_r2000_clk),
-        .rst(rst_debounced_synced),
+        .nrst(nrst_debounced_synced),
         .rom(rom),
         .stall(stall_stepped),
 
@@ -1151,7 +1151,7 @@ module bubble_sort_demo (
     
     sevseg sevseg_inst(
         .clk(clk),
-        .rst(rst_debounced_synced),
+        .nrst(nrst_debounced_synced),
         .number(sevseg_number),
         .an(an),
         .seg(seg),

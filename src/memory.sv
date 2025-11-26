@@ -72,7 +72,7 @@ endmodule
 
 module memory_buffer (
     input var logic clk,
-    input var logic rst,
+    input var logic nrst,
 
     input var logic [Constants::WIDTH-1:0]          pc_in        ,
     input var logic                                 load_in      ,
@@ -90,8 +90,8 @@ module memory_buffer (
     output var logic                                 rd_out        ,
     output var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_out
 );
-    always_ff @ (posedge clk, negedge rst) begin
-        if (!rst) begin
+    always_ff @ (posedge clk, negedge nrst) begin
+        if (!nrst) begin
             pc_out         <= 0;
             load_out       <= 0;
             read_data_out  <= 0;
@@ -113,7 +113,7 @@ endmodule
 
 module memory (
     input  var logic                        clk                ,
-    input  var logic                        rst                ,
+    input  var logic                        nrst                ,
     input  var logic [Constants::BYTE-1:0]  rom     [0:Constants::ROM_SIZE-1],
     input  var logic                        stall              ,
 
@@ -148,7 +148,7 @@ module memory (
 
     execute execute_inst (
         .clk(clk),
-        .rst(rst),
+        .nrst(nrst),
         .rom(rom),
         .stall(stall),
 
@@ -191,7 +191,7 @@ module memory (
 
     memory_buffer memory_buffer_inst (
         .clk (clk),
-        .rst (rst),
+        .nrst (nrst),
         .
         pc_in          (pc_executed),
         .load_in       (load_executed    ),

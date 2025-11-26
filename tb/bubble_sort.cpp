@@ -92,7 +92,7 @@ int sc_main(int argc, char* argv[]) {
 
     // inputs
     sc_clock clk{ "clk", sc_time { 10.0, SC_NS }, 0.5, sc_time { 3.0, SC_NS } };
-    sc_signal<bool> rst;
+    sc_signal<bool> nrst;
     const std::vector<uint8_t> ROM {
         0x3c,
         0x1d,
@@ -947,7 +947,7 @@ int sc_main(int argc, char* argv[]) {
 
     // inputs
     dut->clk(clk);
-    dut->rst(rst);
+    dut->nrst(nrst);
     for(const auto& [port, sig]: std::views::zip(dut->rom, rom)) {
         port(sig);
     }
@@ -966,7 +966,7 @@ int sc_main(int argc, char* argv[]) {
     dut->rd_data_wb(rd_data_wb);
 
 
-    rst = 1;
+    nrst = 1;
     stall = 0;
     for(const auto& [sig, data]: std::views::zip(rom, ROM)) {
         sig = data;
@@ -981,10 +981,10 @@ int sc_main(int argc, char* argv[]) {
 
     // reset
     sc_start(1, SC_NS);
-    rst = 0;
+    nrst = 0;
     sc_start(1, SC_NS);
     Predictor{} == dut;
-    rst = 1;
+    nrst = 1;
     sc_start(1, SC_NS);
 
     sc_start(5, SC_NS);

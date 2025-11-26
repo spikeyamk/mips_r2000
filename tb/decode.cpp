@@ -1363,7 +1363,7 @@ int sc_main(int argc, char* argv[]) {
 
     // inputs
     sc_clock clk{ "clk", sc_time { 10.0, SC_NS }, 0.5, sc_time { 3.0, SC_NS } };
-    sc_signal<bool> rst;
+    sc_signal<bool> nrst;
     const uint8_t ROM[] {
         // asm("add $1,  $0,  $1"); type instructions for writeback check
         0x00,0x01,0x08,0x20,
@@ -1487,7 +1487,7 @@ int sc_main(int argc, char* argv[]) {
 
     // inputs
     dut->clk(clk);
-    dut->rst(rst);
+    dut->nrst(nrst);
     for(const auto& [port, sig]: std::views::zip(dut->rom, rom)) {
         port(sig);
     }
@@ -1529,7 +1529,7 @@ int sc_main(int argc, char* argv[]) {
         port(sig);
     }
 
-    rst = 1;
+    nrst = 1;
     stall = 0;
     branch_taken = 0;
     branch_target = 0;
@@ -1549,16 +1549,16 @@ int sc_main(int argc, char* argv[]) {
 
     // reset
     sc_start(1, SC_NS);
-    rst = 0;
+    nrst = 0;
     sc_start(1, SC_NS);
     Predictor{} == dut;
-    rst = 1;
+    nrst = 1;
     sc_start(1, SC_NS);
 
     // read check empty register file
     for(const uint32_t i: std::views::iota(0U, Constants::REG_COUNT)) {
         if(i == 0) {
-            // load first instruction into fetch stage
+            // load finrst instruction into fetch stage
             sc_start(5, SC_NS);
             sc_start(5, SC_NS);
         }
@@ -1579,12 +1579,12 @@ int sc_main(int argc, char* argv[]) {
     }
 
     // reset
-    rst = 1;
+    nrst = 1;
     sc_start(1, SC_NS);
-    rst = 0;
+    nrst = 0;
     sc_start(1, SC_NS);
     Predictor{} == dut;
-    rst = 1;
+    nrst = 1;
     sc_start(8, SC_NS);
 
     // read check register file writeback
@@ -1593,7 +1593,7 @@ int sc_main(int argc, char* argv[]) {
         rd_address_wb = i + 1;
         rd_data_wb = (i + 1) + 100;
         if(i == 0) {
-            // load first instruction into fetch stage
+            // load finrst instruction into fetch stage
             sc_start(5, SC_NS);
             sc_start(5, SC_NS);
         }
