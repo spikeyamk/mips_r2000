@@ -1,3 +1,7 @@
+package Fetch;
+    localparam logic [Constants::WIDTH-1:0] PC_RESET_VALUE = 32'hffff_fffc;
+endpackage
+
 module pc_register (
     input  var logic                        clk   ,
     input  var logic                        rst   ,
@@ -70,7 +74,7 @@ module fetch_buffer (
 );
     always_ff @ (posedge clk, negedge rst) begin
         if (!rst) begin
-            pc_out          <= 32'hffff_fffb;
+            pc_out          <= Fetch::PC_RESET_VALUE;
             instruction_out <= 0;
         end else if (stall) begin
             pc_out          <= pc_in;

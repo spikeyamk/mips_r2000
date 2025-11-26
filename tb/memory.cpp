@@ -12,7 +12,6 @@ using namespace sc_dt;
 
 struct Predictor {
     sc_bv<32> pc_mem { 0 };
-    bool link_mem { 0 };
     bool load_mem { 0 };
     bool alu_mode_mem { 0 };
     sc_bv<32> alu_result_mem { 0 };
@@ -22,7 +21,6 @@ struct Predictor {
 
     void operator==(const std::unique_ptr<Vmemory>& dut) const {
         assert(pc_mem == dut->pc_mem.read());
-        assert(link_mem == dut->link_mem.read());
         assert(load_mem == dut->load_mem.read());
         assert(alu_mode_mem == dut->alu_mode_mem.read());
         assert(alu_result_mem == dut->alu_result_mem.read());
@@ -36,7 +34,6 @@ const Predictor predictor[] {
     {
         // add      $25,$15,$2
         .pc_mem = 640,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(115 + 102),
@@ -47,7 +44,6 @@ const Predictor predictor[] {
     {
         // addu     $25,$15,$2
         .pc_mem = 644,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(115 + 102),
@@ -58,7 +54,6 @@ const Predictor predictor[] {
     {
         // sub      $25,$15,$2
         .pc_mem = 648,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(115 - 102),
@@ -69,7 +64,6 @@ const Predictor predictor[] {
     {
         // subu     $25,$15,$2
         .pc_mem = 652,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(115U - 102U),
@@ -80,7 +74,6 @@ const Predictor predictor[] {
     {
         // and      $25,$15,$2
         .pc_mem = 656,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(115U & 102U),
@@ -91,7 +84,6 @@ const Predictor predictor[] {
     {
         // or       $25,$15,$2
         .pc_mem = 660,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(115U | 102U),
@@ -102,7 +94,6 @@ const Predictor predictor[] {
     {
         // xor      $25,$15,$2
         .pc_mem = 664,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(115U ^ 102U),
@@ -113,7 +104,6 @@ const Predictor predictor[] {
     {
         // nor      $25,$15,$2
         .pc_mem = 668,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(~(115U | 102U)),
@@ -124,7 +114,6 @@ const Predictor predictor[] {
     {
         // sllv     $25,$15,$2
         .pc_mem = 672,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = (115U << (102U & 0b1'1111U)),
@@ -135,7 +124,6 @@ const Predictor predictor[] {
     {
         // srlv     $25,$15,$2
         .pc_mem = 676,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = (115U >> (102U & 0b1'1111U)),
@@ -146,7 +134,6 @@ const Predictor predictor[] {
     {
         // srav     $25,$15,$2
         .pc_mem = 680,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = (int32_t(115) >> (102U & 0b1'1111U)),
@@ -157,7 +144,6 @@ const Predictor predictor[] {
     {
         // slt      $25,$15,$2
         .pc_mem = 684,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(115 < 102),
@@ -168,7 +154,6 @@ const Predictor predictor[] {
     {
         // sltu     $25,$15,$2
         .pc_mem = 688,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(115U < 102U),
@@ -179,7 +164,6 @@ const Predictor predictor[] {
     {
         // sll      $15,$2,0x1e
         .pc_mem = 692,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(102U << 0x1eU),
@@ -190,7 +174,6 @@ const Predictor predictor[] {
     {
         // srl      $15,$2,0x1e
         .pc_mem = 696,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(102U >> 0x1eU),
@@ -201,7 +184,6 @@ const Predictor predictor[] {
     {
         // sra      $15,$2,0x1e
         .pc_mem = 700,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(102U >> 0x1eU),
@@ -212,7 +194,6 @@ const Predictor predictor[] {
     {
         // addi     $15,$2,-32000
         .pc_mem = 704,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(102 + (-32000)),
@@ -223,7 +204,6 @@ const Predictor predictor[] {
     {
         // addiu    $15,$2,-32000
         .pc_mem = 708,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(102 + (-32000)),
@@ -234,7 +214,6 @@ const Predictor predictor[] {
     {
         // slti     $15,$2,-32000
         .pc_mem = 712,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(102 < (-32000)),
@@ -245,7 +224,6 @@ const Predictor predictor[] {
     {
         // sltiu    $15,$2,-32000
         .pc_mem = 716,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(102 < uint16_t(-32000)),
@@ -256,7 +234,6 @@ const Predictor predictor[] {
     {
         // andi     $15,$2,0x7d00
         .pc_mem = 720,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(102 & 0x7d00U),
@@ -267,7 +244,6 @@ const Predictor predictor[] {
     {
         // ori     $15,$2,0x7d00
         .pc_mem = 724,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(102 | 0x7d00U),
@@ -278,7 +254,6 @@ const Predictor predictor[] {
     {
         // xori     $15,$2,0x7d00
         .pc_mem = 728,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(102 ^ 0x7d00U),
@@ -289,7 +264,6 @@ const Predictor predictor[] {
     {
         // lui      $14,0x7d00
         .pc_mem = 732,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(0x7d00U << 16U),
@@ -301,7 +275,6 @@ const Predictor predictor[] {
     {
         // lui	$17,0xcece
         .pc_mem = 736,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(0xceceU << 16U),
@@ -312,7 +285,6 @@ const Predictor predictor[] {
     {
         // ori	$17,$17,0xbaba
         .pc_mem = 740,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(0xceceU << 16U) | 0xbabaU,
@@ -323,7 +295,6 @@ const Predictor predictor[] {
     {
         // sb	$17,0(zero)
         .pc_mem = 744,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -334,7 +305,6 @@ const Predictor predictor[] {
     {
         // lb	$10,0(zero)
         .pc_mem = 748,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -348,7 +318,6 @@ const Predictor predictor[] {
     {
         // lbu	$10,0(zero)
         .pc_mem = 752,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -359,7 +328,6 @@ const Predictor predictor[] {
     {
         // lh	$10,0(zero)
         .pc_mem = 756,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -370,7 +338,6 @@ const Predictor predictor[] {
     {
         // lhu	$10,0(zero)
         .pc_mem = 760,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -381,7 +348,6 @@ const Predictor predictor[] {
     {
         // lw	$10,0(zero)
         .pc_mem = 764,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -393,7 +359,6 @@ const Predictor predictor[] {
     {
         // lui	$17,0xcece
         .pc_mem = 768,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(0xceceU << 16U),
@@ -404,7 +369,6 @@ const Predictor predictor[] {
     {
         // ori	$17,$17,0xbaba
         .pc_mem = 772,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(0xceceU << 16U) | 0xbabaU,
@@ -415,7 +379,6 @@ const Predictor predictor[] {
     {
         // sh	$17,0(zero)
         .pc_mem = 776,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -426,7 +389,6 @@ const Predictor predictor[] {
     {
         // lb	$10,0(zero)
         .pc_mem = 780,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -440,7 +402,6 @@ const Predictor predictor[] {
     {
         // lbu	$10,0(zero)
         .pc_mem = 784,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -451,7 +412,6 @@ const Predictor predictor[] {
     {
         // lh	$10,0(zero)
         .pc_mem = 788,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -465,7 +425,6 @@ const Predictor predictor[] {
     {
         // lhu	$10,0(zero)
         .pc_mem = 792,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -476,7 +435,6 @@ const Predictor predictor[] {
     {
         // lw	$10,0(zero)
         .pc_mem = 796,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -488,7 +446,6 @@ const Predictor predictor[] {
     {
         // lui	$17,0xcece
         .pc_mem = 800,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(0xceceU << 16U),
@@ -499,7 +456,6 @@ const Predictor predictor[] {
     {
         // ori	$17,$17,0xbaba
         .pc_mem = 804,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = uint32_t(0xceceU << 16U) | 0xbabaU,
@@ -510,7 +466,6 @@ const Predictor predictor[] {
     {
         // sw	$17,0(zero)
         .pc_mem = 808,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -521,7 +476,6 @@ const Predictor predictor[] {
     {
         // lb	$10,0(zero)
         .pc_mem = 812,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -535,7 +489,6 @@ const Predictor predictor[] {
     {
         // lbu	$10,0(zero)
         .pc_mem = 816,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -546,7 +499,6 @@ const Predictor predictor[] {
     {
         // lh	$10,0(zero)
         .pc_mem = 820,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -560,7 +512,6 @@ const Predictor predictor[] {
     {
         // lhu	$10,0(zero)
         .pc_mem = 824,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -571,7 +522,6 @@ const Predictor predictor[] {
     {
         // lw	$10,0(zero)
         .pc_mem = 828,
-        .link_mem = 0,
         .load_mem = 1,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -583,7 +533,6 @@ const Predictor predictor[] {
     {
         // beq	    $14,$10,1 <main+0x10>
         .pc_mem = 832,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -594,7 +543,6 @@ const Predictor predictor[] {
     {
         // bne	    $10,$10,-3 <main+0x8>
         .pc_mem = 836,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -605,7 +553,6 @@ const Predictor predictor[] {
     {
         // blez	$14,1 <main+0x20>
         .pc_mem = 840,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -616,7 +563,6 @@ const Predictor predictor[] {
     {
         // bgtz     $14,-3 <main+0x128>
         .pc_mem = 844,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -627,7 +573,6 @@ const Predictor predictor[] {
     {
         // bltz     $14,5 <main+0x140>
         .pc_mem = 848,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -638,7 +583,6 @@ const Predictor predictor[] {
     {
         // bgez     $11,-7 <main+0x138>
         .pc_mem = 852,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -649,7 +593,6 @@ const Predictor predictor[] {
     {
         // bltzal   $11,5 <main+0x138>
         .pc_mem = 856,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = 856 + 4 + 4,
@@ -660,7 +603,6 @@ const Predictor predictor[] {
     {
         // bgezal   $1,-9 <main+0x130>
         .pc_mem = 860,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = 860 + 4 + 4,
@@ -671,7 +613,6 @@ const Predictor predictor[] {
     {
         // j        880 (880 / 4 == 220)
         .pc_mem = 864,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -682,7 +623,6 @@ const Predictor predictor[] {
     {
         // nop -> sll      $0,$0,0x00
         .pc_mem = 868,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = 0,
@@ -693,7 +633,6 @@ const Predictor predictor[] {
     {
         // jal      896 (896 / 4 = 112)
         .pc_mem = 880,
-        .link_mem = 1,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = 880 + 4 + 4,
@@ -704,7 +643,6 @@ const Predictor predictor[] {
     {
         // ori	$10,$0,912
         .pc_mem = 884,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = 912,
@@ -715,7 +653,6 @@ const Predictor predictor[] {
     {
         // jr       $10
         .pc_mem = 896,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -726,7 +663,6 @@ const Predictor predictor[] {
     {
         // ori	$10,$0,928
         .pc_mem = 900,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = 928,
@@ -737,7 +673,6 @@ const Predictor predictor[] {
     {
         // jalr     $10
         .pc_mem = 912,
-        .link_mem = 1,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = 912 + 4 + 4,
@@ -748,7 +683,6 @@ const Predictor predictor[] {
     {
         // nop -> sll      $0,$0,0x00
         .pc_mem = 916,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = 0,
@@ -759,7 +693,6 @@ const Predictor predictor[] {
     {
         // nop -> sll      $0,$0,0x00
         .pc_mem = 928,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = 0,
@@ -771,7 +704,6 @@ const Predictor predictor[] {
     {
         // beq      $0,$0,-1
         .pc_mem = 932,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -782,7 +714,6 @@ const Predictor predictor[] {
     {
         // nop -> sll      $0,$0,0x00
         .pc_mem = 936,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = 0,
@@ -794,7 +725,6 @@ const Predictor predictor[] {
     {
         // beq      $0,$0,-1
         .pc_mem = 932,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -805,7 +735,6 @@ const Predictor predictor[] {
     {
         // nop -> sll      $0,$0,0x00
         .pc_mem = 936,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = 0,
@@ -817,7 +746,6 @@ const Predictor predictor[] {
     {
         // beq      $0,$0,-1
         .pc_mem = 932,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 0,
         .alu_result_mem = 0,
@@ -828,7 +756,6 @@ const Predictor predictor[] {
     {
         // nop -> sll      $0,$0,0x00
         .pc_mem = 936,
-        .link_mem = 0,
         .load_mem = 0,
         .alu_mode_mem = 1,
         .alu_result_mem = 0,
@@ -1122,7 +1049,6 @@ int sc_main(int argc, char* argv[]) {
     // outputs
     sc_signal<sc_bv<32>> pc_mem;
     std::vector<sc_signal<sc_bv<8>>> ram(std::extent_v<std::remove_reference_t<decltype(Vmemory::ram)>>);
-    sc_signal<bool> link_mem;
     sc_signal<bool> load_mem;
     sc_signal<bool> alu_mode_mem;
     sc_signal<sc_bv<32>> alu_result_mem;
@@ -1152,7 +1078,6 @@ int sc_main(int argc, char* argv[]) {
     for(const auto& [port, sig]: std::views::zip(dut->reg_file, reg_file)) {
         port(sig);
     }
-    dut->link_mem(link_mem);
     dut->load_mem(load_mem);
     dut->alu_mode_mem(alu_mode_mem);
     dut->alu_result_mem(alu_result_mem);
@@ -1209,7 +1134,6 @@ int sc_main(int argc, char* argv[]) {
         sc_start(5, SC_NS);
         Predictor {
             .pc_mem = (i + Constants::REG_COUNT) * 4U,
-            .link_mem = 0,
             .load_mem = 0,
             .alu_mode_mem = 1,
             .alu_result_mem = ((i == 0) ? 0 : (((i == 1) ? (-(i + 100)) : (i + 100)))),
@@ -1225,7 +1149,6 @@ int sc_main(int argc, char* argv[]) {
         sc_start(5, SC_NS);
         Predictor {
             .pc_mem = (2U*i + Constants::REG_COUNT*2U) * 4U,
-            .link_mem = 0,
             .load_mem = 0,
             .alu_mode_mem = 1,
             .alu_result_mem = ((i == 0) ? 0 : (((i == 1) ? (-(i + 200)) : (i + 200)))),
@@ -1239,7 +1162,6 @@ int sc_main(int argc, char* argv[]) {
         sc_start(5, SC_NS);
         Predictor {
             .pc_mem = (2U*i + 1U + Constants::REG_COUNT*2U) * 4U,
-            .link_mem = 0,
             .load_mem = 0,
             .alu_mode_mem = 0,
             .alu_result_mem = i * 4,
@@ -1255,7 +1177,6 @@ int sc_main(int argc, char* argv[]) {
         sc_start(5, SC_NS);
         Predictor {
             .pc_mem = (i + Constants::REG_COUNT*4U) * 4U,
-            .link_mem = 0,
             .load_mem = 1,
             .alu_mode_mem = 0,
             .alu_result_mem = i * 4,

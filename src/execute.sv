@@ -199,13 +199,11 @@ module brancher (
 
     output var logic                        branch_taken ,
     output var logic [Constants::WIDTH-1:0] branch_target,
-    output var logic                        link_branched,
     output var logic                        rd_branched
 );
     always_comb begin
         branch_target = 0;
         branch_taken  = (jump | (branch & branch_comparison_result));
-        link_branched = (jump & link) | (branch_taken & link);
         rd_branched = rd;
         if (branch | jump) begin
             if (target) begin
@@ -215,7 +213,7 @@ module brancher (
             end else if (rs) begin
                 branch_target = rs_data;
             end
-            rd_branched = link_branched;
+            rd_branched = (jump & link) | (branch_taken & link);
         end
     end
 endmodule
@@ -228,15 +226,10 @@ module execute_buffer (
     input var logic                        alu_mode_in  ,
     input var logic [Constants::WIDTH-1:0] alu_result_in,
 
-    input var logic                        rt_in     ,
     input var logic [Constants::WIDTH-1:0] rt_data_in,
 
     input var logic                                 rd_in        ,
     input var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_in,
-
-    input var logic                        link_in         ,
-    input var logic                        branch_taken_in ,
-    input var logic [Constants::WIDTH-1:0] branch_target_in,
 
     input var logic         load_in                     ,
     input var logic [2-1:0] load_store_data_size_mode_in,
@@ -247,15 +240,10 @@ module execute_buffer (
     output var logic                        alu_mode_out  ,
     output var logic [Constants::WIDTH-1:0] alu_result_out,
 
-    output var logic                        rt_out     ,
     output var logic [Constants::WIDTH-1:0] rt_data_out,
 
     output var logic                                 rd_out        ,
     output var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_out,
-
-    output var logic link_out                                ,
-    output var logic branch_taken_out                        ,
-    output var logic [Constants::WIDTH-1:0] branch_target_out,
 
     output var logic         load_out                     ,
     output var logic [2-1:0] load_store_data_size_mode_out,
@@ -268,15 +256,10 @@ module execute_buffer (
             alu_mode_out   <= 0;
             alu_result_out <= 0;
 
-            rt_out      <= 0;
             rt_data_out <= 0;
 
             rd_out         <= 0;
             rd_address_out <= 0;
-
-            link_out         <= 0;
-            branch_taken_out <= 0;
-            branch_target_out <= 0;
 
             load_out                      <= 0;
             load_store_data_size_mode_out <= 0;
@@ -287,15 +270,10 @@ module execute_buffer (
             alu_mode_out   <= alu_mode_in;
             alu_result_out <= alu_result_in;
 
-            rt_out      <= rt_in;
             rt_data_out <= rt_data_in;
 
             rd_out         <= rd_in;
             rd_address_out <= rd_address_in;
-
-            link_out         <= link_in;
-            branch_taken_out <= branch_taken_in;
-            branch_target_out <= branch_target_in;
 
             load_out                      <= load_in;
             load_store_data_size_mode_out <= load_store_data_size_mode_in;
@@ -316,8 +294,6 @@ module execute (
     input var logic [Constants::WIDTH-1:0]          rd_data_wb   ,
 
     output var logic [Constants::WIDTH-1:0] pc_executed           ,
-    output var logic                        branch_taken_executed ,
-    output var logic [Constants::WIDTH-1:0] branch_target_executed,
 
     output var logic                                 rd_executed        ,
     output var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_executed,
@@ -325,10 +301,8 @@ module execute (
     output var logic                        alu_mode_executed  ,
     output var logic [Constants::WIDTH-1:0] alu_result_executed,
 
-    output var logic                        rt_executed    ,
     output var logic [Constants::WIDTH-1:0] rt_data_excuted,
 
-    output var logic         link_executed                     ,
     output var logic         load_executed                     ,
     output var logic [2-1:0] load_store_data_size_mode_executed,
     output var logic         load_sign_extend_executed         ,
@@ -496,7 +470,6 @@ module execute (
         .branch_result (alu_branch_result)
     );
 
-    logic link_branched;
     logic rd_branched;
     brancher brancher_inst (
         .pc                       (pc_decoded        ),
@@ -514,7 +487,6 @@ module execute (
         .
         branch_taken   ( branch_taken_branched),
         .branch_target (branch_target_branched),
-        .link_branched (link_branched         ),
         .rd_branched   (rd_branched           )
     );
 
@@ -526,15 +498,10 @@ module execute (
         .alu_mode_in   (alu_mode_decoded),
         .alu_result_in (alu_result),
         .
-        rt_in      (rt_decoded),
-        .rt_data_in (rt_data_forwarded),
+        rt_data_in (rt_data_forwarded),
         .
         rd_in          (rd_branched),
         .rd_address_in (rd_address_decoded),
-        .
-        link_in         (link_branched),
-        .branch_taken_in (branch_taken_branched),
-        .branch_target_in(branch_target_branched),
         .
         load_in                      (load_decoded),
         .load_store_data_size_mode_in (load_store_data_size_mode_decoded),
@@ -545,15 +512,10 @@ module execute (
         .alu_mode_out   (alu_mode_executed  ),
         .alu_result_out (alu_result_executed),
         .
-        rt_out      (rt_executed    ),
-        .rt_data_out (rt_data_excuted),
+        rt_data_out (rt_data_excuted),
         .
         rd_out         (rd_executed        ),
         .rd_address_out (rd_address_executed),
-        .
-        link_out (link_executed),
-        .branch_taken_out(branch_taken_executed),
-        .branch_target_out(branch_target_executed),
         .
         load_out                       (load_executed                     ),
         .load_store_data_size_mode_out (load_store_data_size_mode_executed),

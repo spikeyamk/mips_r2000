@@ -989,8 +989,10 @@ int sc_main(int argc, char* argv[]) {
 
     sc_start(5, SC_NS);
     sc_start(5, SC_NS);
+
     sc_start(5, SC_NS);
     sc_start(5, SC_NS);
+
     sc_start(5, SC_NS);
     sc_start(5, SC_NS);
 
@@ -1035,12 +1037,16 @@ int sc_main(int argc, char* argv[]) {
             | std::views::chunk(4)
             | std::views::transform([](const auto& e) {
                 return cc(e[0].read(), e[1].read(), e[2].read(), e[3].read()).to_uint();
-            }
-        );
+            });
     };
     assert(std::ranges::equal(DATA, get_array_from_ram_stack()));
 
-    for(uint32_t hang = 0; hang < 3; hang += [&]() { return dut->pc_wb.read() == 0x8CU ? 1 : 0; }()) {
+    for(uint32_t hang = 0; hang < 3;
+        hang += [&]() {
+            const uint32_t HANG_ADDRESS = 0x8C;
+            return dut->pc_wb.read() == HANG_ADDRESS ? 1 : 0;
+        }()
+    ) {
         sc_start(5, SC_NS);
         sc_start(5, SC_NS);
     }

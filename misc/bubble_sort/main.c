@@ -1,6 +1,7 @@
 #include <stddef.h>
+typedef unsigned int uint32_t;
 
-bool sorted(const unsigned int* array, const size_t size) {
+bool sorted(uint32_t const *const array, const size_t size) {
     for(size_t i = 0; i < size - 1; i++) {
         if(array[i] > array[i+1]) {
             return false;
@@ -9,7 +10,7 @@ bool sorted(const unsigned int* array, const size_t size) {
     return true;
 }
 
-void bubble_sort(unsigned int* array, const size_t size) {
+void bubble_sort(uint32_t* array, const size_t size) {
     while(sorted(array, size) == false) {
         for(size_t i = 0; i < size - 1; i++) {
             if(array[i] > array[i+1]) {
@@ -22,7 +23,7 @@ void bubble_sort(unsigned int* array, const size_t size) {
 }
 
 int main(void) {
-    unsigned int array[8] = { 0x2, 0x5, 0x1, 0xF, 0x7, 0x3, 0xA, 0x0 };
+    uint32_t array[8] = { 0x2, 0x5, 0x1, 0xF, 0x7, 0x3, 0xA, 0x0 };
     bubble_sort(array, sizeof(array) / sizeof(*array));
     return 0;
 }

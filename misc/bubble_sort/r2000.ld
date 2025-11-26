@@ -1,7 +1,7 @@
 MEMORY {
     ROM       (rx) : ORIGIN = 0x00000000, LENGTH = 2K
-    RAM        (r) : ORIGIN = 0x80000000, LENGTH = 128
-    RAM_CONST (rw) : ORIGIN = 0x80000400, LENGTH = 1K
+    RAM       (rw) : ORIGIN = 0x80000000, LENGTH = 128
+    RAM_CONST  (r) : ORIGIN = 0x80000400, LENGTH = 1K
 }
 
 _stack = ORIGIN(RAM) + LENGTH(RAM);

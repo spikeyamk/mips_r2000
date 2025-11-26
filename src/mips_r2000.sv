@@ -29,7 +29,6 @@ module mips_r2000 (
     output var logic [Constants::WIDTH-1:0]          rd_data_wb,
     output var logic [Constants::WIDTH-1:0] reg_file [0:Constants::REG_COUNT - 1-1]
 );
-    var logic                                 link_mem      ;
     var logic                                 load_mem      ;
     var logic [Constants::WIDTH-1:0]          read_data_mem ;
     var logic                                 alu_mode_mem  ;
@@ -47,7 +46,6 @@ module mips_r2000 (
 
         .pc_mem(pc_wb),
         .ram(ram),
-        .link_mem(link_mem),
         .load_mem(load_mem),
         .read_data_mem(read_data_mem),
         .alu_mode_mem(alu_mode_mem),

@@ -16,7 +16,7 @@ function(add_systemc_tb TB_NAME TB_SOURCE)
     verilate(${EXE_NAME}
         SYSTEMC
         TRACE_FST
-        VERILATOR_ARGS -pins-bv 2
+        VERILATOR_ARGS -pins-bv 2 -Wall -Wno-DECLFILENAME -Wno-UNUSEDPARAM -Wno-EOFNEWLINE -Wno-UNUSEDSIGNAL
         SOURCES ${SV_SOURCES}
     )
     verilator_link_systemc(${EXE_NAME})

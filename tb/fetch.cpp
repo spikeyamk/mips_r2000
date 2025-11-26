@@ -13,6 +13,10 @@ using namespace sc_dt;
 
 VerilatedFstSc* tfp = nullptr;
 
+struct Fetch {
+    static constexpr uint32_t PC_RESET_VALUE = 0xffff'fffc;
+};
+
 int sc_main(int argc, char* argv[]) {
     Verilated::debug(0);
     Verilated::randReset(2);
@@ -99,7 +103,7 @@ int sc_main(int argc, char* argv[]) {
     sc_start(1, SC_NS);
     rst = 0;
     sc_start(1, SC_NS);
-    assert(dut->pc_fetched.read() == 0xffff'fffb);
+    assert(dut->pc_fetched.read() == Fetch::PC_RESET_VALUE);
     assert(dut->instruction_fetched.read() == 0);
     rst = 1;
     sc_start(1, SC_NS);
@@ -114,7 +118,7 @@ int sc_main(int argc, char* argv[]) {
     sc_start(1, SC_NS);
     rst = 0;
     sc_start(8, SC_NS);
-    assert(dut->pc_fetched.read() == 0xffff'fffb);
+    assert(dut->pc_fetched.read() == Fetch::PC_RESET_VALUE);
     assert(dut->instruction_fetched.read() == 0);
     rst = 1;
     sc_start(1, SC_NS);
