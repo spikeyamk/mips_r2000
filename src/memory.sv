@@ -174,7 +174,7 @@ module memory (
     );
 
     logic [Constants::WIDTH-1:0] read_data;
-    data_memory data_meory_inst (
+    data_memory data_memory_inst (
         .clk (clk),
         .
         load                      (load_ex),
