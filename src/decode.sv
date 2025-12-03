@@ -474,62 +474,62 @@ endmodule
 
 module decode (
     input  var logic                        clk                ,
-    input  var logic                        nrst                ,
-    input  var logic [Constants::BYTE-1:0]  rom     [0:Constants::ROM_SIZE-1] ,
+    input  var logic                        nrst               ,
+    input  var logic [Constants::BYTE-1:0]  rom [0:Constants::ROM_SIZE-1] ,
     input  var logic                        stall              ,
-    input  var logic                        branch_taken       ,
-    input  var logic [Constants::WIDTH-1:0] branch_target      ,
+    input  var logic                        branch_taken_ex       ,
+    input  var logic [Constants::WIDTH-1:0] branch_target_ex      ,
 
     input var logic                                 rd_wb        ,
     input var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_wb,
     input var logic [Constants::WIDTH-1:0]          rd_data_wb   ,
 
-    output var logic [Constants::WIDTH-1:0] pc_decoded,
+    output var logic [Constants::WIDTH-1:0] pc_id,
 
-    output var logic                                 rs_decoded        ,
-    output var logic [Constants::REG_ADDR_WIDTH-1:0] rs_address_decoded,
-    output var logic [Constants::WIDTH-1:0]          rs_data_decoded   ,
-    output var logic                                 rt_decoded        ,
-    output var logic [Constants::REG_ADDR_WIDTH-1:0] rt_address_decoded,
-    output var logic [Constants::WIDTH-1:0]          rt_data_decoded   ,
-    output var logic                                 rd_decoded        ,
-    output var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_decoded,
+    output var logic                                 rs_id        ,
+    output var logic [Constants::REG_ADDR_WIDTH-1:0] rs_address_id,
+    output var logic [Constants::WIDTH-1:0]          rs_data_id   ,
+    output var logic                                 rt_id        ,
+    output var logic [Constants::REG_ADDR_WIDTH-1:0] rt_address_id,
+    output var logic [Constants::WIDTH-1:0]          rt_data_id   ,
+    output var logic                                 rd_id        ,
+    output var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_id,
 
-    output var logic                               shamt_decoded       ,
-    output var logic [Constants::SHAMT_WIDTH-1:0]  shamt_value_decoded ,
-    output var logic                               imm_decoded         ,
-    output var logic [Constants::IMM_WIDTH-1:0]    imm_value_decoded   ,
-    output var logic                               target_decoded      ,
-    output var logic [Constants::TARGET_WIDTH-1:0] target_value_decoded,
+    output var logic                               shamt_id       ,
+    output var logic [Constants::SHAMT_WIDTH-1:0]  shamt_value_id ,
+    output var logic                               imm_id         ,
+    output var logic [Constants::IMM_WIDTH-1:0]    imm_value_id   ,
+    output var logic                               target_id      ,
+    output var logic [Constants::TARGET_WIDTH-1:0] target_value_id,
 
-    output var logic         alu_mode_decoded      ,
-    output var logic [5-1:0] alu_mode_value_decoded,
+    output var logic         alu_mode_id      ,
+    output var logic [5-1:0] alu_mode_value_id,
 
-    output var logic         link_decoded       ,
-    output var logic         branch_decoded     ,
-    output var logic [3-1:0] branch_mode_decoded,
-    output var logic         jump_decoded       ,
+    output var logic         link_id       ,
+    output var logic         branch_id     ,
+    output var logic [3-1:0] branch_mode_id,
+    output var logic         jump_id       ,
 
-    output var logic         lui_decoded                      ,
-    output var logic         load_decoded                     ,
-    output var logic         load_sign_extend_decoded         ,
-    output var logic [2-1:0] load_store_data_size_mode_decoded,
-    output var logic         store_decoded,
+    output var logic         lui_id                      ,
+    output var logic         load_id                     ,
+    output var logic         load_sign_extend_id         ,
+    output var logic [2-1:0] load_store_data_size_mode_id,
+    output var logic         store_id,
 
     output var logic [Constants::WIDTH-1:0] reg_file [0:Constants::REG_COUNT - 1-1]
 );
-    var logic [Constants::WIDTH-1:0] pc_fetched;
-    var logic [Constants::WIDTH-1:0] instruction_fetched;
+    var logic [Constants::WIDTH-1:0] pc_if;
+    var logic [Constants::WIDTH-1:0] instruction_if;
 
     fetch fetch_inst (
         .clk(clk),
         .nrst(nrst),
         .rom(rom),
         .stall(stall),
-        .branch_taken(branch_taken),
-        .branch_target(branch_target),
-        .pc_fetched(pc_fetched),
-        .instruction_fetched(instruction_fetched)
+        .branch_taken_ex(branch_taken_ex),
+        .branch_target_ex(branch_target_ex),
+        .pc_if(pc_if),
+        .instruction_if(instruction_if)
     );
 
     logic                                 rs        ;
@@ -561,7 +561,7 @@ module decode (
     logic         store                    ;
 
     parser parser_inst (
-        .instruction (instruction_fetched),
+        .instruction (instruction_if),
         .
         rs         (rs        ),
         .rs_address (rs_address),
@@ -615,7 +615,7 @@ module decode (
         .clk (clk),
         .nrst (nrst),
         .
-        pc_in (pc_fetched),
+        pc_in (pc_if),
         .
         rs_in         (rs        ),
         .rs_address_in (rs_address),
@@ -648,37 +648,37 @@ module decode (
         rs_data_in (rs_data),
         .rt_data_in (rt_data),
         .
-        pc_out (pc_decoded),
+        pc_out (pc_id),
         .
-        rs_out         (rs_decoded        ),
-        .rs_address_out (rs_address_decoded),
-        .rt_out         (rt_decoded        ),
-        .rt_address_out (rt_address_decoded),
-        .rd_out         (rd_decoded        ),
-        .rd_address_out (rd_address_decoded),
+        rs_out         (rs_id        ),
+        .rs_address_out (rs_address_id),
+        .rt_out         (rt_id        ),
+        .rt_address_out (rt_address_id),
+        .rd_out         (rd_id        ),
+        .rd_address_out (rd_address_id),
         .
-        shamt_out        (shamt_decoded       ),
-        .shamt_value_out  (shamt_value_decoded ),
-        .imm_out          (imm_decoded         ),
-        .imm_value_out    (imm_value_decoded   ),
-        .target_out       (target_decoded      ),
-        .target_value_out (target_value_decoded),
+        shamt_out        (shamt_id       ),
+        .shamt_value_out  (shamt_value_id ),
+        .imm_out          (imm_id         ),
+        .imm_value_out    (imm_value_id   ),
+        .target_out       (target_id      ),
+        .target_value_out (target_value_id),
         .
-        alu_mode_out       (alu_mode_decoded      ),
-        .alu_mode_value_out (alu_mode_value_decoded),
+        alu_mode_out       (alu_mode_id      ),
+        .alu_mode_value_out (alu_mode_value_id),
         .
-        link_out        (link_decoded       ),
-        .branch_out      (branch_decoded     ),
-        .branch_mode_out (branch_mode_decoded),
-        .jump_out        (jump_decoded       ),
+        link_out        (link_id       ),
+        .branch_out      (branch_id     ),
+        .branch_mode_out (branch_mode_id),
+        .jump_out        (jump_id       ),
         .
-        lui_out                       (lui_decoded                      ),
-        .load_out                      (load_decoded                     ),
-        .load_sign_extend_out          (load_sign_extend_decoded         ),
-        .load_store_data_size_mode_out (load_store_data_size_mode_decoded),
-        .store_out                     (store_decoded                    ),
+        lui_out                       (lui_id                      ),
+        .load_out                      (load_id                     ),
+        .load_sign_extend_out          (load_sign_extend_id         ),
+        .load_store_data_size_mode_out (load_store_data_size_mode_id),
+        .store_out                     (store_id                    ),
         .
-        rs_data_out (rs_data_decoded),
-        .rt_data_out (rt_data_decoded)
+        rs_data_out (rs_data_id),
+        .rt_data_out (rt_data_id)
     );
 endmodule

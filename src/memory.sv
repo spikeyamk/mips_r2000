@@ -121,30 +121,30 @@ module memory (
     input var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_wb,
     input var logic [Constants::WIDTH-1:0]          rd_data_wb   ,
 
-    output var logic [Constants::WIDTH-1:0]          pc_mem        ,
+    output var logic [Constants::WIDTH-1:0]          pc_me        ,
     output var logic [Constants::BYTE-1:0] ram [0:Constants::RAM_SIZE-1],
-    output var logic                                 load_mem      ,
-    output var logic [Constants::WIDTH-1:0]          read_data_mem ,
-    output var logic                                 alu_mode_mem  ,
-    output var logic [Constants::WIDTH-1:0]          alu_result_mem,
-    output var logic                                 rd_mem        ,
-    output var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_mem,
+    output var logic                                 load_me      ,
+    output var logic [Constants::WIDTH-1:0]          read_data_me ,
+    output var logic                                 alu_mode_me  ,
+    output var logic [Constants::WIDTH-1:0]          alu_result_me,
+    output var logic                                 rd_me        ,
+    output var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_me,
     output var logic [Constants::WIDTH-1:0] reg_file [0:Constants::REG_COUNT - 1-1]
 );
-    var logic [Constants::WIDTH-1:0] pc_executed           ;
+    var logic [Constants::WIDTH-1:0] pc_ex           ;
 
-    var logic                                 rd_executed        ;
-    var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_executed;
+    var logic                                 rd_ex        ;
+    var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_ex;
 
-    var logic                        alu_mode_executed  ;
-    var logic [Constants::WIDTH-1:0] alu_result_executed;
+    var logic                        alu_mode_ex  ;
+    var logic [Constants::WIDTH-1:0] alu_result_ex;
 
-    var logic [Constants::WIDTH-1:0] rt_data_excuted;
+    var logic [Constants::WIDTH-1:0] rt_data_ex;
 
-    var logic         load_executed                     ;
-    var logic [2-1:0] load_store_data_size_mode_executed;
-    var logic         load_sign_extend_executed         ;
-    var logic         store_executed                    ;
+    var logic         load_ex                     ;
+    var logic [2-1:0] load_store_data_size_mode_ex;
+    var logic         load_sign_extend_ex         ;
+    var logic         store_ex                    ;
 
     execute execute_inst (
         .clk(clk),
@@ -156,34 +156,34 @@ module memory (
         .rd_address_wb(rd_address_wb),
         .rd_data_wb(rd_data_wb),
 
-        .pc_executed(pc_executed),
+        .pc_ex(pc_ex),
 
-        .rd_executed(rd_executed),
-        .rd_address_executed(rd_address_executed),
+        .rd_ex(rd_ex),
+        .rd_address_ex(rd_address_ex),
 
-        .alu_mode_executed(alu_mode_executed),
-        .alu_result_executed(alu_result_executed),
+        .alu_mode_ex(alu_mode_ex),
+        .alu_result_ex(alu_result_ex),
 
-        .rt_data_excuted(rt_data_excuted),
+        .rt_data_ex(rt_data_ex),
 
-        .load_executed(load_executed),
-        .load_store_data_size_mode_executed(load_store_data_size_mode_executed),
-        .load_sign_extend_executed(load_sign_extend_executed),
-        .store_executed(store_executed),
+        .load_ex(load_ex),
+        .load_store_data_size_mode_ex(load_store_data_size_mode_ex),
+        .load_sign_extend_ex(load_sign_extend_ex),
+        .store_ex(store_ex),
         .reg_file(reg_file) 
     );
 
     logic [Constants::WIDTH-1:0] read_data;
-    data_memory data_memory_inst (
+    data_memory data_meory_inst (
         .clk (clk),
         .
-        load                      (load_executed),
-        .load_store_data_size_mode (load_store_data_size_mode_executed),
-        .load_sign_extend          (load_sign_extend_executed),
-        .store                     (store_executed),
+        load                      (load_ex),
+        .load_store_data_size_mode (load_store_data_size_mode_ex),
+        .load_sign_extend          (load_sign_extend_ex),
+        .store                     (store_ex),
         .
-        address    (alu_result_executed),
-        .write_data (rt_data_excuted),
+        address    (alu_result_ex),
+        .write_data (rt_data_ex),
         .
         ram(ram),
         .read_data (read_data)
@@ -193,20 +193,20 @@ module memory (
         .clk (clk),
         .nrst (nrst),
         .
-        pc_in          (pc_executed),
-        .load_in       (load_executed    ),
+        pc_in          (pc_ex),
+        .load_in       (load_ex    ),
         .read_data_in  (read_data),
-        .alu_mode_in   (alu_mode_executed),
-        .alu_result_in (alu_result_executed),
-        .rd_in         (rd_executed),
-        .rd_address_in (rd_address_executed),
+        .alu_mode_in   (alu_mode_ex),
+        .alu_result_in (alu_result_ex),
+        .rd_in         (rd_ex),
+        .rd_address_in (rd_address_ex),
         .
-        pc_out         (pc_mem        ),
-        .load_out       (load_mem      ),
-        .read_data_out  (read_data_mem ),
-        .alu_mode_out   (alu_mode_mem  ),
-        .alu_result_out (alu_result_mem),
-        .rd_out         (rd_mem        ),
-        .rd_address_out (rd_address_mem)
+        pc_out         (pc_me        ),
+        .load_out       (load_me      ),
+        .read_data_out  (read_data_me ),
+        .alu_mode_out   (alu_mode_me  ),
+        .alu_result_out (alu_result_me),
+        .rd_out         (rd_me        ),
+        .rd_address_out (rd_address_me)
     );
 endmodule

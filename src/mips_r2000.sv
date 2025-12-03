@@ -29,10 +29,10 @@ module mips_r2000 (
     output var logic [Constants::WIDTH-1:0]          rd_data_wb,
     output var logic [Constants::WIDTH-1:0] reg_file [0:Constants::REG_COUNT - 1-1]
 );
-    var logic                                 load_mem      ;
-    var logic [Constants::WIDTH-1:0]          read_data_mem ;
-    var logic                                 alu_mode_mem  ;
-    var logic [Constants::WIDTH-1:0]          alu_result_mem;
+    var logic                                 load_me      ;
+    var logic [Constants::WIDTH-1:0]          read_data_me ;
+    var logic                                 alu_mode_me  ;
+    var logic [Constants::WIDTH-1:0]          alu_result_me;
 
     memory memory_inst (
         .clk(clk),
@@ -44,22 +44,22 @@ module mips_r2000 (
         .rd_address_wb(rd_address_wb),
         .rd_data_wb(rd_data_wb),
 
-        .pc_mem(pc_wb),
+        .pc_me(pc_wb),
         .ram(ram),
-        .load_mem(load_mem),
-        .read_data_mem(read_data_mem),
-        .alu_mode_mem(alu_mode_mem),
-        .alu_result_mem(alu_result_mem),
-        .rd_mem(rd_wb),
-        .rd_address_mem(rd_address_wb),
+        .load_me(load_me),
+        .read_data_me(read_data_me),
+        .alu_mode_me(alu_mode_me),
+        .alu_result_me(alu_result_me),
+        .rd_me(rd_wb),
+        .rd_address_me(rd_address_wb),
         .reg_file(reg_file)
     );
 
     writeback writeback_inst (
-        .load(load_mem),
-        .alu_mode(alu_mode_mem),
-        .read_data(read_data_mem),
-        .alu_result(alu_result_mem),
+        .load(load_me),
+        .alu_mode(alu_mode_me),
+        .read_data(read_data_me),
+        .alu_result(alu_result_me),
 
         .rd_data_wb(rd_data_wb)
     );

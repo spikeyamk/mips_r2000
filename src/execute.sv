@@ -1,7 +1,7 @@
 package Execute;
     typedef enum logic [2-1:0] {
-        ForwarderSource_DECODED = $bits(logic [2-1:0])'(2'b00),
-        ForwarderSource_EXECUTED = $bits(logic [2-1:0])'(2'b01),
+        ForwarderSource_id = $bits(logic [2-1:0])'(2'b00),
+        ForwarderSource_ex = $bits(logic [2-1:0])'(2'b01),
         ForwarderSource_WB = $bits(logic [2-1:0])'(2'b10)
     } ForwarderSource;
 endpackage
@@ -53,17 +53,17 @@ module imm_extender (
 endmodule
 
 module register_forwarder (
-    input  var logic [Constants::WIDTH-1:0] r_data_decoded     ,
-    input  var logic [Constants::WIDTH-1:0] alu_result_executed,
+    input  var logic [Constants::WIDTH-1:0] r_data_id     ,
+    input  var logic [Constants::WIDTH-1:0] alu_result_ex,
     input  var logic [Constants::WIDTH-1:0] rd_data_wb         ,
     input  var logic [2-1:0]                selector           ,
     output var logic [Constants::WIDTH-1:0] r_data_forwarded   
 );
     always_comb begin
-        r_data_forwarded = (((selector) ==? (Execute::ForwarderSource_DECODED)) ? (
-            r_data_decoded
-        ) : ((selector) ==? (Execute::ForwarderSource_EXECUTED)) ? (
-            alu_result_executed
+        r_data_forwarded = (((selector) ==? (Execute::ForwarderSource_id)) ? (
+            r_data_id
+        ) : ((selector) ==? (Execute::ForwarderSource_ex)) ? (
+            alu_result_ex
         ) : ((selector) ==? (Execute::ForwarderSource_WB)) ? (
             rd_data_wb
         ) : (
@@ -75,18 +75,18 @@ endmodule
 module forwarding_unit (
     input var logic                                 r                  ,
     input var logic [Constants::REG_ADDR_WIDTH-1:0] r_address          ,
-    input var logic                                 rd_executed        ,
-    input var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_executed,
+    input var logic                                 rd_ex        ,
+    input var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_ex,
     input var logic                                 rd_wb              ,
     input var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_wb      ,
 
     output var logic [2-1:0] selector
 );
     always_comb begin
-        selector = Execute::ForwarderSource_DECODED;
+        selector = Execute::ForwarderSource_id;
         if (r) begin
-            if ((rd_executed == 1) && (r_address == rd_address_executed)) begin
-                selector = Execute::ForwarderSource_EXECUTED;
+            if ((rd_ex == 1) && (r_address == rd_address_ex)) begin
+                selector = Execute::ForwarderSource_ex;
             end else if ((rd_wb == 1) && (r_address == rd_address_wb)) begin
                 selector = Execute::ForwarderSource_WB;
             end
@@ -248,7 +248,7 @@ module execute_buffer (
     output var logic         load_out                     ,
     output var logic [2-1:0] load_store_data_size_mode_out,
     output var logic         load_sign_extend_out         ,
-    output var logic         store_out                
+    output var logic         store_out                    
 );
     always_ff @ (posedge clk, negedge nrst) begin
         if (!nrst) begin
@@ -293,53 +293,53 @@ module execute (
     input var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_wb,
     input var logic [Constants::WIDTH-1:0]          rd_data_wb   ,
 
-    output var logic [Constants::WIDTH-1:0] pc_executed           ,
+    output var logic [Constants::WIDTH-1:0] pc_ex           ,
 
-    output var logic                                 rd_executed        ,
-    output var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_executed,
+    output var logic                                 rd_ex        ,
+    output var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_ex,
 
-    output var logic                        alu_mode_executed  ,
-    output var logic [Constants::WIDTH-1:0] alu_result_executed,
+    output var logic                        alu_mode_ex  ,
+    output var logic [Constants::WIDTH-1:0] alu_result_ex,
 
-    output var logic [Constants::WIDTH-1:0] rt_data_excuted,
+    output var logic [Constants::WIDTH-1:0] rt_data_ex,
 
-    output var logic         load_executed                     ,
-    output var logic [2-1:0] load_store_data_size_mode_executed,
-    output var logic         load_sign_extend_executed         ,
-    output var logic         store_executed,
+    output var logic         load_ex                     ,
+    output var logic [2-1:0] load_store_data_size_mode_ex,
+    output var logic         load_sign_extend_ex         ,
+    output var logic         store_ex,
     output var logic [Constants::WIDTH-1:0] reg_file [0:Constants::REG_COUNT - 1-1]
 );
-    var logic [Constants::WIDTH-1:0] pc_decoded;
+    var logic [Constants::WIDTH-1:0] pc_id;
 
-    var logic                                 rs_decoded;
-    var logic [Constants::REG_ADDR_WIDTH-1:0] rs_address_decoded;
-    var logic [Constants::WIDTH-1:0]          rs_data_decoded;
-    var logic                                 rt_decoded;
-    var logic [Constants::REG_ADDR_WIDTH-1:0] rt_address_decoded;
-    var logic [Constants::WIDTH-1:0]          rt_data_decoded;
-    var logic                                 rd_decoded;
-    var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_decoded;
+    var logic                                 rs_id;
+    var logic [Constants::REG_ADDR_WIDTH-1:0] rs_address_id;
+    var logic [Constants::WIDTH-1:0]          rs_data_id;
+    var logic                                 rt_id;
+    var logic [Constants::REG_ADDR_WIDTH-1:0] rt_address_id;
+    var logic [Constants::WIDTH-1:0]          rt_data_id;
+    var logic                                 rd_id;
+    var logic [Constants::REG_ADDR_WIDTH-1:0] rd_address_id;
 
-    var logic                               shamt_decoded;
-    var logic [Constants::SHAMT_WIDTH-1:0]  shamt_value_decoded ;
-    var logic                               imm_decoded;
-    var logic [Constants::IMM_WIDTH-1:0]    imm_value_decoded;
-    var logic                               target_decoded;
-    var logic [Constants::TARGET_WIDTH-1:0] target_value_decoded;
+    var logic                               shamt_id;
+    var logic [Constants::SHAMT_WIDTH-1:0]  shamt_value_id ;
+    var logic                               imm_id;
+    var logic [Constants::IMM_WIDTH-1:0]    imm_value_id;
+    var logic                               target_id;
+    var logic [Constants::TARGET_WIDTH-1:0] target_value_id;
 
-    var logic         alu_mode_decoded;
-    var logic [5-1:0] alu_mode_value_decoded;
+    var logic         alu_mode_id;
+    var logic [5-1:0] alu_mode_value_id;
 
-    var logic         link_decoded;
-    var logic         branch_decoded;
-    var logic [3-1:0] branch_mode_decoded;
-    var logic         jump_decoded;
+    var logic         link_id;
+    var logic         branch_id;
+    var logic [3-1:0] branch_mode_id;
+    var logic         jump_id;
 
-    var logic         lui_decoded;
-    var logic         load_decoded;
-    var logic         load_sign_extend_decoded;
-    var logic [2-1:0] load_store_data_size_mode_decoded;
-    var logic         store_decoded;
+    var logic         lui_id;
+    var logic         load_id;
+    var logic         load_sign_extend_id;
+    var logic [2-1:0] load_store_data_size_mode_id;
+    var logic         store_id;
 
     var logic                        branch_taken_branched;
     var logic [Constants::WIDTH-1:0] branch_target_branched;
@@ -349,75 +349,75 @@ module execute (
         .nrst(nrst),
         .rom(rom),
         .stall(stall),
-        .branch_taken(branch_taken_branched),
-        .branch_target(branch_target_branched),
+        .branch_taken_ex(branch_taken_branched),
+        .branch_target_ex(branch_target_branched),
 
         .rd_wb(rd_wb),
         .rd_address_wb(rd_address_wb),
         .rd_data_wb(rd_data_wb),
 
-        .pc_decoded(pc_decoded),
+        .pc_id(pc_id),
 
-        .rs_decoded(rs_decoded),
-        .rs_address_decoded(rs_address_decoded),
-        .rs_data_decoded(rs_data_decoded),
-        .rt_decoded(rt_decoded),
-        .rt_address_decoded(rt_address_decoded),
-        .rt_data_decoded(rt_data_decoded),
-        .rd_decoded(rd_decoded),
-        .rd_address_decoded(rd_address_decoded),
+        .rs_id(rs_id),
+        .rs_address_id(rs_address_id),
+        .rs_data_id(rs_data_id),
+        .rt_id(rt_id),
+        .rt_address_id(rt_address_id),
+        .rt_data_id(rt_data_id),
+        .rd_id(rd_id),
+        .rd_address_id(rd_address_id),
 
-        .shamt_decoded(shamt_decoded),
-        .shamt_value_decoded(shamt_value_decoded),
-        .imm_decoded(imm_decoded),
-        .imm_value_decoded(imm_value_decoded),
-        .target_decoded(target_decoded),
-        .target_value_decoded(target_value_decoded),
+        .shamt_id(shamt_id),
+        .shamt_value_id(shamt_value_id),
+        .imm_id(imm_id),
+        .imm_value_id(imm_value_id),
+        .target_id(target_id),
+        .target_value_id(target_value_id),
 
-        .alu_mode_decoded(alu_mode_decoded),
-        .alu_mode_value_decoded(alu_mode_value_decoded),
+        .alu_mode_id(alu_mode_id),
+        .alu_mode_value_id(alu_mode_value_id),
 
-        .link_decoded(link_decoded),
-        .branch_decoded(branch_decoded),
-        .branch_mode_decoded(branch_mode_decoded),
-        .jump_decoded(jump_decoded),
+        .link_id(link_id),
+        .branch_id(branch_id),
+        .branch_mode_id(branch_mode_id),
+        .jump_id(jump_id),
 
-        .lui_decoded(lui_decoded),
-        .load_decoded(load_decoded),
-        .load_sign_extend_decoded(load_sign_extend_decoded),
-        .load_store_data_size_mode_decoded(load_store_data_size_mode_decoded),
-        .store_decoded(store_decoded),
+        .lui_id(lui_id),
+        .load_id(load_id),
+        .load_sign_extend_id(load_sign_extend_id),
+        .load_store_data_size_mode_id(load_store_data_size_mode_id),
+        .store_id(store_id),
         .reg_file(reg_file)
     );
 
     logic [Constants::WIDTH-1:0] imm_value_extended;
     imm_extender imm_extender_inst (
-        .imm                (imm_decoded       ),
-        .imm_value          (imm_value_decoded ),
-        .shamt              (shamt_decoded     ),
-        .shamt_value        (shamt_value_decoded),
-        .alu_mode           (alu_mode_decoded  ),
-        .alu_mode_value     (alu_mode_value_decoded),
-        .load               (load_decoded),
-        .store              (store_decoded),
-        .branch             (branch_decoded),
+        .imm                (imm_id       ),
+        .imm_value          (imm_value_id ),
+        .shamt              (shamt_id     ),
+        .shamt_value        (shamt_value_id),
+        .alu_mode           (alu_mode_id  ),
+        .alu_mode_value     (alu_mode_value_id),
+        .load               (load_id),
+        .store              (store_id),
+        .branch             (branch_id),
         .imm_value_extended (imm_value_extended)
     );
 
     logic [2-1:0] forwarder_a_selector;
     forwarding_unit forwarding_unit_a (
-        .r                   (rs_decoded          ),
-        .r_address           (rs_address_decoded  ),
-        .rd_executed         (rd_executed         ),
-        .rd_address_executed (rd_address_executed ),
+        .r                   (rs_id          ),
+        .r_address           (rs_address_id  ),
+        .rd_ex         (rd_ex         ),
+        .rd_address_ex (rd_address_ex ),
         .rd_wb               (rd_wb               ),
         .rd_address_wb       (rd_address_wb       ),
         .selector            (forwarder_a_selector)
     );
     logic [Constants::WIDTH-1:0] rs_data_forwarded;
     register_forwarder register_forwarder_a (
-        .r_data_decoded      (rs_data_decoded     ),
-        .alu_result_executed (alu_result_executed ),
+        .r_data_id      (rs_data_id     ),
+        .alu_result_ex (alu_result_ex ),
         .rd_data_wb          (rd_data_wb          ),
         .selector            (forwarder_a_selector),
         .r_data_forwarded    (rs_data_forwarded   )
@@ -425,27 +425,27 @@ module execute (
 
     logic [2-1:0] forwarder_b_selector;
     forwarding_unit forwarding_unit_b (
-        .r                   (rt_decoded          ),
-        .r_address           (rt_address_decoded  ),
-        .rd_executed         (rd_executed         ),
-        .rd_address_executed (rd_address_executed ),
+        .r                   (rt_id          ),
+        .r_address           (rt_address_id  ),
+        .rd_ex               (rd_ex          ),
+        .rd_address_ex       (rd_address_ex  ),
         .rd_wb               (rd_wb               ),
         .rd_address_wb       (rd_address_wb       ),
         .selector            (forwarder_b_selector)
     );
     logic [Constants::WIDTH-1:0] rt_data_forwarded;
     register_forwarder register_forwarder_b (
-        .r_data_decoded      (rt_data_decoded     ),
-        .alu_result_executed (alu_result_executed ),
+        .r_data_id      (rt_data_id     ),
+        .alu_result_ex  (alu_result_ex  ),
         .rd_data_wb          (rd_data_wb          ),
         .selector            (forwarder_b_selector),
         .r_data_forwarded    (rt_data_forwarded   )
     );
     logic [Constants::WIDTH-1:0] alu_b;
     alu_register_imm_mux alu_register_imm_mux_inst (
-        .imm                (imm_decoded       ),
-        .shamt              (shamt_decoded     ),
-        .branch             (branch_decoded    ),
+        .imm                (imm_id       ),
+        .shamt              (shamt_id     ),
+        .branch             (branch_id    ),
         .rt_data_forwarded  (rt_data_forwarded ),
         .imm_value_extended (imm_value_extended),
         .alu_b              (alu_b             )
@@ -456,15 +456,15 @@ module execute (
     alu alu_inst (
         .a              (rs_data_forwarded),
         .b              (alu_b            ),
-        .pc             (pc_decoded       ),
-        .link           (link_decoded     ),
-        .alu_mode       (alu_mode_decoded ),
-        .alu_mode_value (alu_mode_value_decoded),
-        .branch         (branch_decoded   ),
-        .branch_mode    (branch_mode_decoded),
-        .lui            (lui_decoded      ),
-        .load           (load_decoded     ),
-        .store          (store_decoded    ),
+        .pc             (pc_id       ),
+        .link           (link_id     ),
+        .alu_mode       (alu_mode_id ),
+        .alu_mode_value (alu_mode_value_id),
+        .branch         (branch_id   ),
+        .branch_mode    (branch_mode_id),
+        .lui            (lui_id      ),
+        .load           (load_id     ),
+        .store          (store_id    ),
         .
         result (alu_result),
         .branch_result (alu_branch_result)
@@ -472,54 +472,55 @@ module execute (
 
     logic rd_branched;
     brancher brancher_inst (
-        .pc                       (pc_decoded        ),
-        .branch                   (branch_decoded    ),
+        .pc                       (pc_id        ),
+        .branch                   (branch_id    ),
         .branch_comparison_result (alu_branch_result ),
-        .link                     (link_decoded      ),
-        .jump                     (jump_decoded      ),
-        .target                   (target_decoded    ),
-        .target_value             (target_value_decoded),
-        .rs                       (rs_decoded        ),
+        .link                     (link_id      ),
+        .jump                     (jump_id      ),
+        .target                   (target_id    ),
+        .target_value             (target_value_id),
+        .rs                       (rs_id        ),
         .rs_data                  (rs_data_forwarded ),
-        .imm                      (imm_decoded       ),
+        .imm                      (imm_id       ),
         .imm_value                (imm_value_extended),
-        .rd                       (rd_decoded        ),
+        .rd                       (rd_id        ),
         .
-        branch_taken   ( branch_taken_branched),
+        branch_taken   (branch_taken_branched ),
         .branch_target (branch_target_branched),
         .rd_branched   (rd_branched           )
     );
 
     execute_buffer execute_buffer_inst (
-        .clk (clk),
+        .clk  (clk ),
         .nrst (nrst),
         .
-        pc_in         (pc_decoded ),
-        .alu_mode_in   (alu_mode_decoded),
-        .alu_result_in (alu_result),
+        pc_in          (pc_id      ),
+        .alu_mode_in   (alu_mode_id),
+        .alu_result_in (alu_result ),
         .
         rt_data_in (rt_data_forwarded),
         .
         rd_in          (rd_branched),
-        .rd_address_in (rd_address_decoded),
+        .rd_address_in (rd_address_id),
         .
-        load_in                      (load_decoded),
-        .load_store_data_size_mode_in (load_store_data_size_mode_decoded),
-        .load_sign_extend_in          (load_sign_extend_decoded),
-        .store_in                     (store_decoded),
+        load_in                       (load_id),
+        .load_store_data_size_mode_in (load_store_data_size_mode_id),
+        .load_sign_extend_in          (load_sign_extend_id),
+        .store_in                     (store_id),
+
         .
-        pc_out         (pc_executed        ),
-        .alu_mode_out   (alu_mode_executed  ),
-        .alu_result_out (alu_result_executed),
+        pc_out          (pc_ex        ),
+        .alu_mode_out   (alu_mode_ex  ),
+        .alu_result_out (alu_result_ex),
         .
-        rt_data_out (rt_data_excuted),
+        rt_data_out (rt_data_ex),
         .
-        rd_out         (rd_executed        ),
-        .rd_address_out (rd_address_executed),
+        rd_out          (rd_ex        ),
+        .rd_address_out (rd_address_ex),
         .
-        load_out                       (load_executed                     ),
-        .load_store_data_size_mode_out (load_store_data_size_mode_executed),
-        .load_sign_extend_out          (load_sign_extend_executed         ),
-        .store_out                     (store_executed                    )
+        load_out                       (load_ex                     ),
+        .load_store_data_size_mode_out (load_store_data_size_mode_ex),
+        .load_sign_extend_out          (load_sign_extend_ex         ),
+        .store_out                     (store_ex                    )
     );
 endmodule

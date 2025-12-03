@@ -20,13 +20,13 @@ endmodule
 module pc_advancer (
     input  var logic [Constants::WIDTH-1:0] pc_in        ,
     input  var logic                        stall        ,
-    input  var logic                        branch_taken ,
-    input  var logic [Constants::WIDTH-1:0] branch_target,
+    input  var logic                        branch_taken_ex ,
+    input  var logic [Constants::WIDTH-1:0] branch_target_ex,
     output var logic [Constants::WIDTH-1:0] pc_out   
 );
     always_comb begin
-        if (branch_taken) begin
-            pc_out = branch_target + 4;
+        if (branch_taken_ex) begin
+            pc_out = branch_target_ex + 4;
         end else if (stall) begin
             pc_out = pc_in;
         end else begin
@@ -37,18 +37,18 @@ endmodule
 
 module instruction_memory (
     input  var logic [Constants::WIDTH-1:0] pc,
-    input  var logic                        branch_taken,
-    input  var logic [Constants::WIDTH-1:0] branch_target,
+    input  var logic                        branch_taken_ex,
+    input  var logic [Constants::WIDTH-1:0] branch_target_ex,
     input  var logic [Constants::BYTE-1:0]  rom [0:Constants::ROM_SIZE-1],
     output var logic [Constants::WIDTH-1:0] out           
 );
     always_comb begin
-        if (branch_taken) begin
+        if (branch_taken_ex) begin
             out = {
-                rom[branch_target + 0],
-                rom[branch_target + 1],
-                rom[branch_target + 2],
-                rom[branch_target + 3]
+                rom[branch_target_ex + 0],
+                rom[branch_target_ex + 1],
+                rom[branch_target_ex + 2],
+                rom[branch_target_ex + 3]
             };
         end else begin
             out = {
@@ -66,8 +66,8 @@ module fetch_buffer (
     input  var logic                        nrst            ,
     input  var logic                        stall          ,
     input  var logic [Constants::WIDTH-1:0] pc_in          ,
-    input  var logic                        branch_taken   ,
-    input  var logic [Constants::WIDTH-1:0] branch_target  ,
+    input  var logic                        branch_taken_ex   ,
+    input  var logic [Constants::WIDTH-1:0] branch_target_ex  ,
     input  var logic [Constants::WIDTH-1:0] instruction_in ,
     output var logic [Constants::WIDTH-1:0] pc_out         ,
     output var logic [Constants::WIDTH-1:0] instruction_out
@@ -80,8 +80,8 @@ module fetch_buffer (
             pc_out          <= pc_in;
             instruction_out <= 0;
         end else begin
-            if (branch_taken) begin
-                pc_out <= branch_target;
+            if (branch_taken_ex) begin
+                pc_out <= branch_target_ex;
             end else begin
                 pc_out <= pc_in;
             end
@@ -92,13 +92,13 @@ endmodule
 
 module fetch (
     input  var logic                        clk                ,
-    input  var logic                        nrst                ,
+    input  var logic                        nrst               ,
     input  var logic [Constants::BYTE-1:0]  rom     [0:Constants::ROM_SIZE-1] ,
     input  var logic                        stall              ,
-    input  var logic                        branch_taken       ,
-    input  var logic [Constants::WIDTH-1:0] branch_target      ,
-    output var logic [Constants::WIDTH-1:0] pc_fetched         ,
-    output var logic [Constants::WIDTH-1:0] instruction_fetched
+    input  var logic                        branch_taken_ex    ,
+    input  var logic [Constants::WIDTH-1:0] branch_target_ex   ,
+    output var logic [Constants::WIDTH-1:0] pc_if         ,
+    output var logic [Constants::WIDTH-1:0] instruction_if
 );
     logic [Constants::WIDTH-1:0] pc_advanced;
     logic [Constants::WIDTH-1:0] pc         ;
@@ -113,29 +113,29 @@ module fetch (
     pc_advancer pc_advancer_inst (
         .pc_in         (pc           ),
         .stall         (stall        ),
-        .branch_taken  (branch_taken ),
-        .branch_target (branch_target),
+        .branch_taken_ex  (branch_taken_ex ),
+        .branch_target_ex (branch_target_ex),
         .pc_out        (pc_advanced  )
     );
 
     logic [Constants::WIDTH-1:0] instruction;
     instruction_memory instruction_memory_inst (
         .pc (pc          ),
-        .branch_taken (branch_taken),
-        .branch_target (branch_target),
+        .branch_taken_ex (branch_taken_ex),
+        .branch_target_ex (branch_target_ex),
         .rom     (rom),
         .out     (instruction )
     );
 
     fetch_buffer fetch_buffer_inst (
         .clk             (clk                ),
-        .nrst             (nrst                ),
+        .nrst            (nrst               ),
         .stall           (stall              ),
         .pc_in           (pc                 ),
-        .branch_taken    (branch_taken       ),
-        .branch_target   (branch_target      ),
+        .branch_taken_ex    (branch_taken_ex       ),
+        .branch_target_ex   (branch_target_ex      ),
         .instruction_in  (instruction        ),
-        .pc_out          (pc_fetched         ),
-        .instruction_out (instruction_fetched)
+        .pc_out          (pc_if         ),
+        .instruction_out (instruction_if)
     );
 endmodule

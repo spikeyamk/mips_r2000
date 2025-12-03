@@ -5,7 +5,7 @@ module divider #(
     input logic nrst,
     output logic out
 );
-	logic[31:0] count = 0;
+	logic[31:0] count;
 	
 	always @(posedge clk, negedge nrst) begin
         if (!nrst) begin
@@ -71,26 +71,28 @@ module sevseg (
     output logic [6:0] seg,
     output logic dp
 );
-    logic clk_divided_10_000;
+    logic clk_sevseg_10_kHz;
     divider #(
-        .STOPPER(10_000)
-    ) divider_10_000 (
+        .STOPPER(5_000)
+    ) divider_sevseg_10_kHz (
         .clk(clk),
         .nrst(nrst),
-        .out(clk_divided_10_000)
+        .out(clk_sevseg_10_kHz)
     );
 
     logic [3-1:0] digit_selector;
     counter #(
         .WIDTH(3)
     ) counter_digit_selector (
-        .clk(clk_divided_10_000),
+        .clk(clk_sevseg_10_kHz),
         .nrst(nrst),
         .out(digit_selector)
     );
     
-    always_ff @(posedge clk_divided_10_000, negedge nrst) begin
-        if (!nrst || (an == 8'b1111_1111)) begin
+    always_ff @(posedge clk_sevseg_10_kHz, negedge nrst) begin
+        if (!nrst) begin
+            an <= 8'b1111_1110;
+        end else if (an == 8'b1111_1111) begin
             an <= 8'b1111_1110;
         end else begin
             an <= (an == 8'b0111_1111) ? 8'b1111_1110 : ((an << 1'b1) | 8'b0000_0001);
@@ -118,43 +120,72 @@ module sevseg (
     end
 endmodule
 
-module debounce_sync (
+module nrst_sync (
     input logic clk,
-    input logic in,
+    input logic nrst,
+    output logic out
+);
+    logic ff1;
+    logic ff2;
+
+    always_ff @(negedge clk) begin
+        ff1 <= nrst;
+        ff2 <= ff1;
+    end
+
+    always_comb begin
+        out = ff2;
+    end
+endmodule
+
+module debounce_sync (
+    input  logic clk,
+    input  logic nrst,
+    input  logic in,
     output logic out
 );
     logic sync_0;
     logic sync_1;
 
-    always_ff @(posedge clk, negedge in) begin
-        if (!in) begin
-            sync_0 <= 0;
-            sync_1 <= 0;
+    always_ff @(posedge clk, negedge nrst) begin
+        if (!nrst) begin
+            sync_0 <= 1'b0;
+            sync_1 <= 1'b0;
         end else begin
-            sync_0 <= 1;
+            sync_0 <= in;
             sync_1 <= sync_0;
         end
     end
-    
-    localparam int unsigned CYCLES = 10_000_000;
-    logic [$clog2(CYCLES)-1:0] count = 0;
-    logic stable_state = 1;
 
-    always_ff @(posedge clk) begin
-        if (sync_1 != stable_state) begin
-            count <= count + 1;
+    logic        stable;
+    logic        prev_sync;
+    logic [31:0] counter;
 
-            if (count == CYCLES-1) begin
-                stable_state <= sync_1;
-                count <= 0;
-            end
-        end else begin
-            count <= 0;
-        end
-    end
-    
     always_comb begin
-        out = stable_state;
+        stable = (sync_1 == prev_sync);
+    end
+
+    localparam int STABLE_COUNT = 5_000_000;
+    always_ff @(posedge clk, negedge nrst) begin
+        if (!nrst) begin
+            prev_sync <= 1'b0;
+            counter   <= 32'd0;
+            out       <= in;
+        end else begin
+            prev_sync <= sync_1;
+
+            if (stable) begin
+                if (counter < STABLE_COUNT) begin
+                    counter <= counter + 1;
+                end
+            end else begin
+                counter <= 32'd0;
+            end
+
+            if (counter == STABLE_COUNT) begin
+                out <= sync_1;
+            end
+        end
     end
 endmodule
 
@@ -178,12 +209,12 @@ module stall_stepper (
     logic stall_stepped;
     always_ff @(negedge clk, negedge nrst) begin
         if (!nrst) begin
-            stall_stepped <= step;
+            stall_stepped <= stall;
         end else if (step_posedge_flag & stall) begin
             stall_stepped <= 0;
             step_posedge_flag_nrst <= 0;
         end else begin
-            step_posedge_flag_nnrst <= 1;
+            step_posedge_flag_nrst <= 1;
             stall_stepped <= stall;
         end
     end
@@ -198,12 +229,12 @@ module stall_stepper (
 endmodule
 
 module bubble_sort_demo (
-    input logic clk,
+    input logic clk_100_MHz,
     input logic nrst,
     input logic stall,
     input logic turbo,
     input logic step,
-    input logic show_pc,
+    input logic show_pc_wb,
     input logic show_stack_array,
     input logic show_ra,
     input logic show_s8,
@@ -212,25 +243,35 @@ module bubble_sort_demo (
     output logic [6:0] seg,
     output logic dp
 );
-    logic nrst_debounced_synced;
-    debounce_sync debounce_sync_nrst (
-        .clk(clk),
-        .in(nrst),
-        .out(nrst_debounced_synced)
+    logic nrst_synced;
+    nrst_sync nrst_sync_inst (
+        .clk(clk_100_MHz),
+        .nrst(nrst),
+        .out(nrst_synced)
     );
-    
+
     logic stall_debounced_synced;
     debounce_sync debounce_sync_stall (
-        .clk(clk),
+        .clk(clk_100_MHz),
+        .nrst(nrst_synced),
         .in(stall),
         .out(stall_debounced_synced)
     );
     
     logic step_debounced_synced;
     debounce_sync debounce_sync_step (
-        .clk(clk),
+        .clk(clk_100_MHz),
+        .nrst(nrst_synced),
         .in(step),
         .out(step_debounced_synced)
+    );
+
+    logic turbo_debounced_synced;
+    debounce_sync debounce_sync_turbo (
+        .clk(clk_100_MHz),
+        .nrst(nrst_synced),
+        .in(turbo),
+        .out(turbo_debounced_synced)
     );
     
     logic [Constants::BYTE-1:0] rom [0:Constants::ROM_SIZE-1];
@@ -1079,33 +1120,33 @@ module bubble_sort_demo (
     logic [Constants::WIDTH-1:0]          rd_data_wb;
     logic [Constants::WIDTH-1:0] reg_file [0:Constants::REG_COUNT-1-1];
 
-    logic clk_divided_25_000_000;
+    logic clk_divided_4_Hz;
     divider #(
         .STOPPER(25_000_000)
-    ) divider_25_000_000 (
-        .clk(clk),
-        .nrst(nrst_debounced_synced),
-        .out(clk_divided_25_000_000)
+    ) divider_4_Hz (
+        .clk(clk_100_MHz),
+        .nrst(nrst_synced),
+        .out(clk_divided_4_Hz)
     );
     
-    logic clk_divided_turbo;
+    logic clk_divided_turbo_500_Hz;
     divider #(
         .STOPPER(100_000)
-    ) divider_turbo (
-        .clk(clk),
-        .nrst(nrst_debounced_synced),
-        .out(clk_divided_turbo)
+    ) divider_500_Hz (
+        .clk(clk_100_MHz),
+        .nrst(nrst_synced),
+        .out(clk_divided_turbo_500_Hz)
     );
     
     logic mips_r2000_clk;
     always_comb begin
-        mips_r2000_clk = turbo ? clk_divided_turbo : clk_divided_25_000_000;
+        mips_r2000_clk = turbo_debounced_synced ? clk_divided_turbo_500_Hz : clk_divided_4_Hz;
     end
     
     logic stall_stepped;
     stall_stepper stall_stepper_inst (
         .clk(mips_r2000_clk),
-        .nrst(nrst_debounced_synced),
+        .nrst(nrst_synced),
         .stall(stall_debounced_synced),
         .step(step_debounced_synced),
         .out(stall_stepped)
@@ -1113,7 +1154,7 @@ module bubble_sort_demo (
 
     mips_r2000 mips_r2000_inst(
         .clk(mips_r2000_clk),
-        .nrst(nrst_debounced_synced),
+        .nrst(nrst_synced),
         .rom(rom),
         .stall(stall_stepped),
 
@@ -1129,7 +1170,7 @@ module bubble_sort_demo (
     logic [Constants::WIDTH-1:0] sevseg_number;
     logic [5-1:0] sevseg_selector;
     always_comb begin
-        sevseg_selector = { show_pc, show_stack_array, show_ra, show_s8, show_sp };
+        sevseg_selector = { show_pc_wb, show_stack_array, show_ra, show_s8, show_sp };
         case (sevseg_selector)
             5'b10000: sevseg_number = pc_wb;
             5'b01000: sevseg_number = {
@@ -1150,8 +1191,8 @@ module bubble_sort_demo (
     end
     
     sevseg sevseg_inst(
-        .clk(clk),
-        .nrst(nrst_debounced_synced),
+        .clk(clk_100_MHz),
+        .nrst(nrst_synced),
         .number(sevseg_number),
         .an(an),
         .seg(seg),

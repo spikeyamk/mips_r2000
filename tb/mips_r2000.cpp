@@ -976,7 +976,7 @@ int sc_main(int argc, char* argv[]) {
     Verilated::mkdir("logs");
     tfp = new VerilatedFstSc;
     dut->trace(tfp, 99);
-    tfp->open("logs/bubble_sort_tb.fst");
+    tfp->open("logs/mips_r2000_tb.fst");
     std::signal(SIGABRT, [](int signal) { if(tfp) { tfp->flush(); tfp->close(); }});
 
     // reset

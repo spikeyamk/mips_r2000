@@ -11,757 +11,757 @@ using namespace sc_core;
 using namespace sc_dt;
 
 struct Predictor {
-    sc_bv<32> pc_mem { 0 };
-    bool load_mem { 0 };
-    bool alu_mode_mem { 0 };
-    sc_bv<32> alu_result_mem { 0 };
-    bool rd_mem { 0 };
-    sc_bv<5> rd_address_mem { 0 };
-    sc_bv<32> read_data_mem { 0 };
+    sc_bv<32> pc_me { 0 };
+    bool load_me { 0 };
+    bool alu_mode_me { 0 };
+    sc_bv<32> alu_result_me { 0 };
+    bool rd_me { 0 };
+    sc_bv<5> rd_address_me { 0 };
+    sc_bv<32> read_data_me { 0 };
 
     void operator==(const std::unique_ptr<Vmemory>& dut) const {
-        assert(pc_mem == dut->pc_mem.read());
-        assert(load_mem == dut->load_mem.read());
-        assert(alu_mode_mem == dut->alu_mode_mem.read());
-        assert(alu_result_mem == dut->alu_result_mem.read());
-        assert(rd_mem == dut->rd_mem.read());
-        assert(rd_address_mem == dut->rd_address_mem.read());
-        assert(read_data_mem == dut->read_data_mem.read());
+        assert(pc_me == dut->pc_me.read());
+        assert(load_me == dut->load_me.read());
+        assert(alu_mode_me == dut->alu_mode_me.read());
+        assert(alu_result_me == dut->alu_result_me.read());
+        assert(rd_me == dut->rd_me.read());
+        assert(rd_address_me == dut->rd_address_me.read());
+        assert(read_data_me == dut->read_data_me.read());
     }
 };
 
 const Predictor predictor[] {
     {
         // add      $25,$15,$2
-        .pc_mem = 640,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(115 + 102),
-        .rd_mem = 1,
-        .rd_address_mem = 25,
-        .read_data_mem = 0,
+        .pc_me = 640,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(115 + 102),
+        .rd_me = 1,
+        .rd_address_me = 25,
+        .read_data_me = 0,
     },
     {
         // addu     $25,$15,$2
-        .pc_mem = 644,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(115 + 102),
-        .rd_mem = 1,
-        .rd_address_mem = 25,
-        .read_data_mem = 0,
+        .pc_me = 644,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(115 + 102),
+        .rd_me = 1,
+        .rd_address_me = 25,
+        .read_data_me = 0,
     },
     {
         // sub      $25,$15,$2
-        .pc_mem = 648,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(115 - 102),
-        .rd_mem = 1,
-        .rd_address_mem = 25,
-        .read_data_mem = 0,
+        .pc_me = 648,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(115 - 102),
+        .rd_me = 1,
+        .rd_address_me = 25,
+        .read_data_me = 0,
     },
     {
         // subu     $25,$15,$2
-        .pc_mem = 652,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(115U - 102U),
-        .rd_mem = 1,
-        .rd_address_mem = 25,
-        .read_data_mem = 0,
+        .pc_me = 652,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(115U - 102U),
+        .rd_me = 1,
+        .rd_address_me = 25,
+        .read_data_me = 0,
     },
     {
         // and      $25,$15,$2
-        .pc_mem = 656,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(115U & 102U),
-        .rd_mem = 1,
-        .rd_address_mem = 25,
-        .read_data_mem = 0,
+        .pc_me = 656,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(115U & 102U),
+        .rd_me = 1,
+        .rd_address_me = 25,
+        .read_data_me = 0,
     },
     {
         // or       $25,$15,$2
-        .pc_mem = 660,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(115U | 102U),
-        .rd_mem = 1,
-        .rd_address_mem = 25,
-        .read_data_mem = 0,
+        .pc_me = 660,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(115U | 102U),
+        .rd_me = 1,
+        .rd_address_me = 25,
+        .read_data_me = 0,
     },
     {
         // xor      $25,$15,$2
-        .pc_mem = 664,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(115U ^ 102U),
-        .rd_mem = 1,
-        .rd_address_mem = 25,
-        .read_data_mem = 0,
+        .pc_me = 664,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(115U ^ 102U),
+        .rd_me = 1,
+        .rd_address_me = 25,
+        .read_data_me = 0,
     },
     {
         // nor      $25,$15,$2
-        .pc_mem = 668,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(~(115U | 102U)),
-        .rd_mem = 1,
-        .rd_address_mem = 25,
-        .read_data_mem = 0,
+        .pc_me = 668,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(~(115U | 102U)),
+        .rd_me = 1,
+        .rd_address_me = 25,
+        .read_data_me = 0,
     },
     {
         // sllv     $25,$15,$2
-        .pc_mem = 672,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = (115U << (102U & 0b1'1111U)),
-        .rd_mem = 1,
-        .rd_address_mem = 25,
-        .read_data_mem = 0,
+        .pc_me = 672,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = (115U << (102U & 0b1'1111U)),
+        .rd_me = 1,
+        .rd_address_me = 25,
+        .read_data_me = 0,
     },
     {
         // srlv     $25,$15,$2
-        .pc_mem = 676,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = (115U >> (102U & 0b1'1111U)),
-        .rd_mem = 1,
-        .rd_address_mem = 25,
-        .read_data_mem = 0,
+        .pc_me = 676,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = (115U >> (102U & 0b1'1111U)),
+        .rd_me = 1,
+        .rd_address_me = 25,
+        .read_data_me = 0,
     },
     {
         // srav     $25,$15,$2
-        .pc_mem = 680,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = (int32_t(115) >> (102U & 0b1'1111U)),
-        .rd_mem = 1,
-        .rd_address_mem = 25,
-        .read_data_mem = 0,
+        .pc_me = 680,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = (int32_t(115) >> (102U & 0b1'1111U)),
+        .rd_me = 1,
+        .rd_address_me = 25,
+        .read_data_me = 0,
     },
     {
         // slt      $25,$15,$2
-        .pc_mem = 684,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(115 < 102),
-        .rd_mem = 1,
-        .rd_address_mem = 25,
-        .read_data_mem = 0,
+        .pc_me = 684,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(115 < 102),
+        .rd_me = 1,
+        .rd_address_me = 25,
+        .read_data_me = 0,
     },
     {
         // sltu     $25,$15,$2
-        .pc_mem = 688,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(115U < 102U),
-        .rd_mem = 1,
-        .rd_address_mem = 25,
-        .read_data_mem = 0,
+        .pc_me = 688,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(115U < 102U),
+        .rd_me = 1,
+        .rd_address_me = 25,
+        .read_data_me = 0,
     },
     {
         // sll      $15,$2,0x1e
-        .pc_mem = 692,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(102U << 0x1eU),
-        .rd_mem = 1,
-        .rd_address_mem = 15,
-        .read_data_mem = 0,
+        .pc_me = 692,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(102U << 0x1eU),
+        .rd_me = 1,
+        .rd_address_me = 15,
+        .read_data_me = 0,
     },
     {
         // srl      $15,$2,0x1e
-        .pc_mem = 696,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(102U >> 0x1eU),
-        .rd_mem = 1,
-        .rd_address_mem = 15,
-        .read_data_mem = 0,
+        .pc_me = 696,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(102U >> 0x1eU),
+        .rd_me = 1,
+        .rd_address_me = 15,
+        .read_data_me = 0,
     },
     {
         // sra      $15,$2,0x1e
-        .pc_mem = 700,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(102U >> 0x1eU),
-        .rd_mem = 1,
-        .rd_address_mem = 15,
-        .read_data_mem = 0,
+        .pc_me = 700,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(102U >> 0x1eU),
+        .rd_me = 1,
+        .rd_address_me = 15,
+        .read_data_me = 0,
     },
     {
         // addi     $15,$2,-32000
-        .pc_mem = 704,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(102 + (-32000)),
-        .rd_mem = 1,
-        .rd_address_mem = 15,
-        .read_data_mem = 0,
+        .pc_me = 704,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(102 + (-32000)),
+        .rd_me = 1,
+        .rd_address_me = 15,
+        .read_data_me = 0,
     },
     {
         // addiu    $15,$2,-32000
-        .pc_mem = 708,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(102 + (-32000)),
-        .rd_mem = 1,
-        .rd_address_mem = 15,
-        .read_data_mem = 0,
+        .pc_me = 708,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(102 + (-32000)),
+        .rd_me = 1,
+        .rd_address_me = 15,
+        .read_data_me = 0,
     },
     {
         // slti     $15,$2,-32000
-        .pc_mem = 712,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(102 < (-32000)),
-        .rd_mem = 1,
-        .rd_address_mem = 15,
-        .read_data_mem = 0,
+        .pc_me = 712,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(102 < (-32000)),
+        .rd_me = 1,
+        .rd_address_me = 15,
+        .read_data_me = 0,
     },
     {
         // sltiu    $15,$2,-32000
-        .pc_mem = 716,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(102 < uint16_t(-32000)),
-        .rd_mem = 1,
-        .rd_address_mem = 15,
-        .read_data_mem = 0,
+        .pc_me = 716,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(102 < uint16_t(-32000)),
+        .rd_me = 1,
+        .rd_address_me = 15,
+        .read_data_me = 0,
     },
     {
         // andi     $15,$2,0x7d00
-        .pc_mem = 720,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(102 & 0x7d00U),
-        .rd_mem = 1,
-        .rd_address_mem = 15,
-        .read_data_mem = 0,
+        .pc_me = 720,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(102 & 0x7d00U),
+        .rd_me = 1,
+        .rd_address_me = 15,
+        .read_data_me = 0,
     },
     {
         // ori     $15,$2,0x7d00
-        .pc_mem = 724,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(102 | 0x7d00U),
-        .rd_mem = 1,
-        .rd_address_mem = 15,
-        .read_data_mem = 0,
+        .pc_me = 724,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(102 | 0x7d00U),
+        .rd_me = 1,
+        .rd_address_me = 15,
+        .read_data_me = 0,
     },
     {
         // xori     $15,$2,0x7d00
-        .pc_mem = 728,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(102 ^ 0x7d00U),
-        .rd_mem = 1,
-        .rd_address_mem = 15,
-        .read_data_mem = 0,
+        .pc_me = 728,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(102 ^ 0x7d00U),
+        .rd_me = 1,
+        .rd_address_me = 15,
+        .read_data_me = 0,
     },
     {
         // lui      $14,0x7d00
-        .pc_mem = 732,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(0x7d00U << 16U),
-        .rd_mem = 1,
-        .rd_address_mem = 14,
-        .read_data_mem = 0,
+        .pc_me = 732,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(0x7d00U << 16U),
+        .rd_me = 1,
+        .rd_address_me = 14,
+        .read_data_me = 0,
     },
 
     {
         // lui	$17,0xcece
-        .pc_mem = 736,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(0xceceU << 16U),
-        .rd_mem = 1,
-        .rd_address_mem = 17,
-        .read_data_mem = 0,
+        .pc_me = 736,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(0xceceU << 16U),
+        .rd_me = 1,
+        .rd_address_me = 17,
+        .read_data_me = 0,
     },
     {
         // ori	$17,$17,0xbaba
-        .pc_mem = 740,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(0xceceU << 16U) | 0xbabaU,
-        .rd_mem = 1,
-        .rd_address_mem = 17,
-        .read_data_mem = 0,
+        .pc_me = 740,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(0xceceU << 16U) | 0xbabaU,
+        .rd_me = 1,
+        .rd_address_me = 17,
+        .read_data_me = 0,
     },
     {
         // sb	$17,0(zero)
-        .pc_mem = 744,
-        .load_mem = 0,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 0,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 744,
+        .load_me = 0,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 0,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // lb	$10,0(zero)
-        .pc_mem = 748,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = (
+        .pc_me = 748,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = (
             sc_bv<24>((0xbaU & 0x80u) ? 0xffffffu : 0x000000u),
             sc_bv<8>(0xbaU)
         ),
     },
     {
         // lbu	$10,0(zero)
-        .pc_mem = 752,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = 0xbaU,
+        .pc_me = 752,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = 0xbaU,
     },
     {
         // lh	$10,0(zero)
-        .pc_mem = 756,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = 0xbaU,
+        .pc_me = 756,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = 0xbaU,
     },
     {
         // lhu	$10,0(zero)
-        .pc_mem = 760,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = 0xbaU,
+        .pc_me = 760,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = 0xbaU,
     },
     {
         // lw	$10,0(zero)
-        .pc_mem = 764,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = 0xbaU,
+        .pc_me = 764,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = 0xbaU,
     },
 
     {
         // lui	$17,0xcece
-        .pc_mem = 768,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(0xceceU << 16U),
-        .rd_mem = 1,
-        .rd_address_mem = 17,
-        .read_data_mem = 0,
+        .pc_me = 768,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(0xceceU << 16U),
+        .rd_me = 1,
+        .rd_address_me = 17,
+        .read_data_me = 0,
     },
     {
         // ori	$17,$17,0xbaba
-        .pc_mem = 772,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(0xceceU << 16U) | 0xbabaU,
-        .rd_mem = 1,
-        .rd_address_mem = 17,
-        .read_data_mem = 0,
+        .pc_me = 772,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(0xceceU << 16U) | 0xbabaU,
+        .rd_me = 1,
+        .rd_address_me = 17,
+        .read_data_me = 0,
     },
     {
         // sh	$17,0(zero)
-        .pc_mem = 776,
-        .load_mem = 0,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 0,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 776,
+        .load_me = 0,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 0,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // lb	$10,0(zero)
-        .pc_mem = 780,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = (
+        .pc_me = 780,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = (
             sc_bv<24>((0xbaU & 0x80u) ? 0xffffffu : 0x000000u),
             sc_bv<8>(0xbaU)
         ),
     },
     {
         // lbu	$10,0(zero)
-        .pc_mem = 784,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = 0xbaU,
+        .pc_me = 784,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = 0xbaU,
     },
     {
         // lh	$10,0(zero)
-        .pc_mem = 788,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = (
+        .pc_me = 788,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = (
             sc_bv<16>((0xbabaU & 0x80u) ? 0xffffu : 0x0000u),
             sc_bv<16>(0xbabaU)
         ),
     },
     {
         // lhu	$10,0(zero)
-        .pc_mem = 792,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = 0xbabaU,
+        .pc_me = 792,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = 0xbabaU,
     },
     {
         // lw	$10,0(zero)
-        .pc_mem = 796,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = 0xbabaU,
+        .pc_me = 796,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = 0xbabaU,
     },
 
     {
         // lui	$17,0xcece
-        .pc_mem = 800,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(0xceceU << 16U),
-        .rd_mem = 1,
-        .rd_address_mem = 17,
-        .read_data_mem = 0,
+        .pc_me = 800,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(0xceceU << 16U),
+        .rd_me = 1,
+        .rd_address_me = 17,
+        .read_data_me = 0,
     },
     {
         // ori	$17,$17,0xbaba
-        .pc_mem = 804,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = uint32_t(0xceceU << 16U) | 0xbabaU,
-        .rd_mem = 1,
-        .rd_address_mem = 17,
-        .read_data_mem = 0,
+        .pc_me = 804,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = uint32_t(0xceceU << 16U) | 0xbabaU,
+        .rd_me = 1,
+        .rd_address_me = 17,
+        .read_data_me = 0,
     },
     {
         // sw	$17,0(zero)
-        .pc_mem = 808,
-        .load_mem = 0,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 0,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 808,
+        .load_me = 0,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 0,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // lb	$10,0(zero)
-        .pc_mem = 812,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = (
+        .pc_me = 812,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = (
             sc_bv<24>((0xbaU & 0x80u) ? 0xffffffu : 0x000000u),
             sc_bv<8>(0xbaU)
         ),
     },
     {
         // lbu	$10,0(zero)
-        .pc_mem = 816,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = 0xbaU,
+        .pc_me = 816,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = 0xbaU,
     },
     {
         // lh	$10,0(zero)
-        .pc_mem = 820,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = (
+        .pc_me = 820,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = (
             sc_bv<16>((0xbabaU & 0x80u) ? 0xffffu : 0x0000u),
             sc_bv<16>(0xbabaU)
         ),
     },
     {
         // lhu	$10,0(zero)
-        .pc_mem = 824,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = 0xbabaU,
+        .pc_me = 824,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = 0xbabaU,
     },
     {
         // lw	$10,0(zero)
-        .pc_mem = 828,
-        .load_mem = 1,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = 0xcecebabaU,
+        .pc_me = 828,
+        .load_me = 1,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = 0xcecebabaU,
     },
 
     {
         // beq	    $14,$10,1 <main+0x10>
-        .pc_mem = 832,
-        .load_mem = 0,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 0,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 832,
+        .load_me = 0,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 0,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // bne	    $10,$10,-3 <main+0x8>
-        .pc_mem = 836,
-        .load_mem = 0,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 0,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 836,
+        .load_me = 0,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 0,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // blez	$14,1 <main+0x20>
-        .pc_mem = 840,
-        .load_mem = 0,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 0,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 840,
+        .load_me = 0,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 0,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // bgtz     $14,-3 <main+0x128>
-        .pc_mem = 844,
-        .load_mem = 0,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 0,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 844,
+        .load_me = 0,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 0,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // bltz     $14,5 <main+0x140>
-        .pc_mem = 848,
-        .load_mem = 0,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 0,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 848,
+        .load_me = 0,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 0,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // bgez     $11,-7 <main+0x138>
-        .pc_mem = 852,
-        .load_mem = 0,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 0,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 852,
+        .load_me = 0,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 0,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // bltzal   $11,5 <main+0x138>
-        .pc_mem = 856,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = 856 + 4 + 4,
-        .rd_mem = 0,
-        .rd_address_mem = 31,
-        .read_data_mem = 0,
+        .pc_me = 856,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = 856 + 4 + 4,
+        .rd_me = 0,
+        .rd_address_me = 31,
+        .read_data_me = 0,
     },
     {
         // bgezal   $1,-9 <main+0x130>
-        .pc_mem = 860,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = 860 + 4 + 4,
-        .rd_mem = 0,
-        .rd_address_mem = 31,
-        .read_data_mem = 0,
+        .pc_me = 860,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = 860 + 4 + 4,
+        .rd_me = 0,
+        .rd_address_me = 31,
+        .read_data_me = 0,
     },
     {
         // j        880 (880 / 4 == 220)
-        .pc_mem = 864,
-        .load_mem = 0,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 0,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 864,
+        .load_me = 0,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 0,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // nop -> sll      $0,$0,0x00
-        .pc_mem = 868,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 868,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // jal      896 (896 / 4 = 112)
-        .pc_mem = 880,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = 880 + 4 + 4,
-        .rd_mem = 1,
-        .rd_address_mem = 31,
-        .read_data_mem = 0,
+        .pc_me = 880,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = 880 + 4 + 4,
+        .rd_me = 1,
+        .rd_address_me = 31,
+        .read_data_me = 0,
     },
     {
         // ori	$10,$0,912
-        .pc_mem = 884,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = 912,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = 0,
+        .pc_me = 884,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = 912,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = 0,
     },
     {
         // jr       $10
-        .pc_mem = 896,
-        .load_mem = 0,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 0,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 896,
+        .load_me = 0,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 0,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // ori	$10,$0,928
-        .pc_mem = 900,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = 928,
-        .rd_mem = 1,
-        .rd_address_mem = 10,
-        .read_data_mem = 0,
+        .pc_me = 900,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = 928,
+        .rd_me = 1,
+        .rd_address_me = 10,
+        .read_data_me = 0,
     },
     {
         // jalr     $10
-        .pc_mem = 912,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = 912 + 4 + 4,
-        .rd_mem = 1,
-        .rd_address_mem = 31,
-        .read_data_mem = 0,
+        .pc_me = 912,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = 912 + 4 + 4,
+        .rd_me = 1,
+        .rd_address_me = 31,
+        .read_data_me = 0,
     },
     {
         // nop -> sll      $0,$0,0x00
-        .pc_mem = 916,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 916,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // nop -> sll      $0,$0,0x00
-        .pc_mem = 928,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 928,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     // ------------------//------------------ //
     {
         // beq      $0,$0,-1
-        .pc_mem = 932,
-        .load_mem = 0,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 0,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 932,
+        .load_me = 0,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 0,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // nop -> sll      $0,$0,0x00
-        .pc_mem = 936,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 936,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     // ------------------//------------------ //
     {
         // beq      $0,$0,-1
-        .pc_mem = 932,
-        .load_mem = 0,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 0,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 932,
+        .load_me = 0,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 0,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // nop -> sll      $0,$0,0x00
-        .pc_mem = 936,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 936,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     // ------------------//------------------ //
     {
         // beq      $0,$0,-1
-        .pc_mem = 932,
-        .load_mem = 0,
-        .alu_mode_mem = 0,
-        .alu_result_mem = 0,
-        .rd_mem = 0,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 932,
+        .load_me = 0,
+        .alu_mode_me = 0,
+        .alu_result_me = 0,
+        .rd_me = 0,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
     {
         // nop -> sll      $0,$0,0x00
-        .pc_mem = 936,
-        .load_mem = 0,
-        .alu_mode_mem = 1,
-        .alu_result_mem = 0,
-        .rd_mem = 1,
-        .rd_address_mem = 0,
-        .read_data_mem = 0,
+        .pc_me = 936,
+        .load_me = 0,
+        .alu_mode_me = 1,
+        .alu_result_me = 0,
+        .rd_me = 1,
+        .rd_address_me = 0,
+        .read_data_me = 0,
     },
 };
 
@@ -1047,14 +1047,14 @@ int sc_main(int argc, char* argv[]) {
     sc_signal<sc_bv<32>> rd_data_wb;
 
     // outputs
-    sc_signal<sc_bv<32>> pc_mem;
+    sc_signal<sc_bv<32>> pc_me;
     std::vector<sc_signal<sc_bv<8>>> ram(std::extent_v<std::remove_reference_t<decltype(Vmemory::ram)>>);
-    sc_signal<bool> load_mem;
-    sc_signal<bool> alu_mode_mem;
-    sc_signal<sc_bv<32>> alu_result_mem;
-    sc_signal<bool> rd_mem;
-    sc_signal<sc_bv<5>> rd_address_mem;
-    sc_signal<sc_bv<32>> read_data_mem;
+    sc_signal<bool> load_me;
+    sc_signal<bool> alu_mode_me;
+    sc_signal<sc_bv<32>> alu_result_me;
+    sc_signal<bool> rd_me;
+    sc_signal<sc_bv<5>> rd_address_me;
+    sc_signal<sc_bv<32>> read_data_me;
     std::vector<sc_signal<sc_bv<32>>> reg_file(std::extent_v<std::remove_reference_t<decltype(Vmemory::reg_file)>>);
 
     const std::unique_ptr<Vmemory> dut{new Vmemory{"memory_context"}};
@@ -1071,19 +1071,19 @@ int sc_main(int argc, char* argv[]) {
     dut->rd_data_wb(rd_data_wb);
 
     // outputs
-    dut->pc_mem(pc_mem);
+    dut->pc_me(pc_me);
     for(const auto& [port, sig]: std::views::zip(dut->ram, ram)) {
         port(sig);
     }
     for(const auto& [port, sig]: std::views::zip(dut->reg_file, reg_file)) {
         port(sig);
     }
-    dut->load_mem(load_mem);
-    dut->alu_mode_mem(alu_mode_mem);
-    dut->alu_result_mem(alu_result_mem);
-    dut->rd_mem(rd_mem);
-    dut->rd_address_mem(rd_address_mem);
-    dut->read_data_mem(read_data_mem);
+    dut->load_me(load_me);
+    dut->alu_mode_me(alu_mode_me);
+    dut->alu_result_me(alu_result_me);
+    dut->rd_me(rd_me);
+    dut->rd_address_me(rd_address_me);
+    dut->read_data_me(read_data_me);
 
 
     nrst = 1;
@@ -1133,13 +1133,13 @@ int sc_main(int argc, char* argv[]) {
     for(const uint32_t i: std::views::iota(0U, Constants::REG_COUNT)) {
         sc_start(5, SC_NS);
         Predictor {
-            .pc_mem = (i + Constants::REG_COUNT) * 4U,
-            .load_mem = 0,
-            .alu_mode_mem = 1,
-            .alu_result_mem = ((i == 0) ? 0 : (((i == 1) ? (-(i + 100)) : (i + 100)))),
-            .rd_mem = 1,
-            .rd_address_mem = i,
-            .read_data_mem = 0,
+            .pc_me = (i + Constants::REG_COUNT) * 4U,
+            .load_me = 0,
+            .alu_mode_me = 1,
+            .alu_result_me = ((i == 0) ? 0 : (((i == 1) ? (-(i + 100)) : (i + 100)))),
+            .rd_me = 1,
+            .rd_address_me = i,
+            .read_data_me = 0,
         } == dut;
         sc_start(5, SC_NS);
     }
@@ -1148,26 +1148,26 @@ int sc_main(int argc, char* argv[]) {
         // put register +100 value into forwarder with addi, $1,$1,100
         sc_start(5, SC_NS);
         Predictor {
-            .pc_mem = (2U*i + Constants::REG_COUNT*2U) * 4U,
-            .load_mem = 0,
-            .alu_mode_mem = 1,
-            .alu_result_mem = ((i == 0) ? 0 : (((i == 1) ? (-(i + 200)) : (i + 200)))),
-            .rd_mem = 1,
-            .rd_address_mem = i,
-            .read_data_mem = 0,
+            .pc_me = (2U*i + Constants::REG_COUNT*2U) * 4U,
+            .load_me = 0,
+            .alu_mode_me = 1,
+            .alu_result_me = ((i == 0) ? 0 : (((i == 1) ? (-(i + 200)) : (i + 200)))),
+            .rd_me = 1,
+            .rd_address_me = i,
+            .read_data_me = 0,
         } == dut;
         sc_start(5, SC_NS);
         
         // memory store with sw $1, 4($0)
         sc_start(5, SC_NS);
         Predictor {
-            .pc_mem = (2U*i + 1U + Constants::REG_COUNT*2U) * 4U,
-            .load_mem = 0,
-            .alu_mode_mem = 0,
-            .alu_result_mem = i * 4,
-            .rd_mem = 0,
-            .rd_address_mem = 0,
-            .read_data_mem = 0,
+            .pc_me = (2U*i + 1U + Constants::REG_COUNT*2U) * 4U,
+            .load_me = 0,
+            .alu_mode_me = 0,
+            .alu_result_me = i * 4,
+            .rd_me = 0,
+            .rd_address_me = 0,
+            .read_data_me = 0,
         } == dut;
         sc_start(5, SC_NS);
     }
@@ -1176,13 +1176,13 @@ int sc_main(int argc, char* argv[]) {
         // put register +100 value into forwarder with addi, $1,$1,100
         sc_start(5, SC_NS);
         Predictor {
-            .pc_mem = (i + Constants::REG_COUNT*4U) * 4U,
-            .load_mem = 1,
-            .alu_mode_mem = 0,
-            .alu_result_mem = i * 4,
-            .rd_mem = 1,
-            .rd_address_mem = i,
-            .read_data_mem = ((i == 0) ? 0 : (((i == 1) ? (-(i + 200)) : (i + 200)))),
+            .pc_me = (i + Constants::REG_COUNT*4U) * 4U,
+            .load_me = 1,
+            .alu_mode_me = 0,
+            .alu_result_me = i * 4,
+            .rd_me = 1,
+            .rd_address_me = i,
+            .read_data_me = ((i == 0) ? 0 : (((i == 1) ? (-(i + 200)) : (i + 200)))),
         } == dut;
         sc_start(5, SC_NS);
     }
